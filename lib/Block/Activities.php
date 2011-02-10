@@ -1,48 +1,42 @@
 <?php
-
-$block_name = _("Friends activities");
-
 /**
- * $Id: friends.php 1019 2008-10-31 08:18:10Z duck $
- *
+ * @author  Duck <duck@obala.net>
  * @package Folks
- * @author Duck <duck@obala.net>
  */
-class Horde_Block_Folks_activities extends Horde_Block {
-
-    var $_app = 'folks';
-
+class Folks_Block_Activities extends Horde_Block
+{
     /**
-     * The title to go in this block.
-     *
-     * @return string   The title text.
      */
-    function _title()
+    public function getName()
     {
         return _("Friends activities");
     }
 
     /**
-     * The parameters of block
-     *
-     * @return array   The parameters
      */
-    function _params()
+    protected function _title()
     {
-        return array('limit' => array('name' => _("Number of activities to display"),
-                                    'type' => 'int',
-                                    'default' => 10));
+        return $this->getName();
     }
 
     /**
-     * The content to go in this block.
-     *
-     * @return string   The content
      */
-    function _content()
+    protected function _params()
+    {
+        return array(
+            'limit' => array(
+                'name' => _("Number of activities to display"),
+                'type' => 'int',
+                'default' => 10
+            )
+        );
+    }
+
+    /**
+     */
+    protected function _content()
     {
         require_once dirname(__FILE__) . '/../base.php';
-        require_once FOLKS_BASE . '/lib/Friends.php';
 
         $friends_driver = Folks_Friends::singleton();
         $friend_list = $friends_driver->getFriends();

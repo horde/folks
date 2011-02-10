@@ -1,45 +1,40 @@
 <?php
-
-$block_name = _("New users");
-
 /**
- * $Id: new.php 1019 2008-10-31 08:18:10Z duck $
- *
+ * @author  Duck <duck@obala.net>
  * @package Folks
- * @author Duck <duck@obala.net>
  */
-class Horde_Block_Folks_new extends Horde_Block {
-
-    var $_app = 'folks';
-
+class Folks_Block_New extends Horde_Block
+{
     /**
-     * The title to go in this block.
-     *
-     * @return string   The title text.
      */
-    function _title()
+    public function getName()
     {
         return _("New users");
     }
 
     /**
-     * The parameters of block
-     *
-     * @return array   The parameters
      */
-    function _params()
+    protected function _title()
     {
-        return array('limit' => array('name' => _("Limit"),
-                                    'type' => 'int',
-                                    'default' => 10));
+        return $this->getName();
     }
 
     /**
-     * The content to go in this block.
-     *
-     * @return string   The content
      */
-    function _content()
+    protected function _params()
+    {
+        return array(
+            'limit' => array(
+                'name' => _("Limit"),
+                'type' => 'int',
+                'default' => 10
+            )
+        );
+    }
+
+    /**
+     */
+    protected function _content()
     {
         require_once dirname(__FILE__) . '/../base.php';
 

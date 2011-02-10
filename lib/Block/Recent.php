@@ -1,48 +1,50 @@
 <?php
-
-$block_name = _("People you might know");
-
 /**
- * $Id: friends.php 1019 2008-10-31 08:18:10Z duck $
- *
+ * @author  Duck <duck@obala.net>
  * @package Folks
- * @author Duck <duck@obala.net>
  */
-class Horde_Block_Folks_know extends Horde_Block {
-
-    var $_app = 'folks';
-
+class Folks_Block_Recent extends Horde_Block
+{
     /**
-     * The title to go in this block.
-     *
-     * @return string   The title text.
      */
-    function _title()
+    public function getName()
     {
-        return _("People you might know");
+        return _("Recent visitors");
     }
 
     /**
-     * The content to go in this block.
-     *
-     * @return string   The content
      */
-    function _content()
+    protected function _title()
+    {
+        return $this->getName();
+    }
+
+    /**
+     */
+    protected function _params()
+    {
+        return array(
+            'limit' => array(
+                'name' => _("Limit"),
+                'type' => 'int',
+                'default' => 10
+            )
+        );
+    }
+
+    /**
+     */
+    protected function _content()
     {
         require_once dirname(__FILE__) . '/../base.php';
-        require_once FOLKS_BASE . '/lib/Friends.php';
 
-        $friends_driver = Folks_Friends::singleton();
-        $list = $friends_driver->getPossibleFriends(20);
+        $list = $GLOBALS['folks_driver']->getRecentVisitors($this->_params['limit']);
         if ($list instanceof PEAR_Error) {
             return $list;
         }
 
         // Prepare actions
         $actions = array(
-            array('url' => Horde::url('edit/friends/add.php'),
-                'id' => 'user',
-                'name' => _("Add friend")),
             array('url' => Horde::url('user.php'),
                 'id' => 'user',
                 'name' => _("View profile")));

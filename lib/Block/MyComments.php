@@ -1,40 +1,40 @@
 <?php
-
-$block_name = _("Last comments on my profile");
-
 /**
  * Horde_Block_folks_my_comments:: Implementation of the Horde_Block API to
  * display last comments on users videos.
- *
- * @package Horde_Block
  */
-class Horde_Block_folks_my_comments extends Horde_Block {
-
-    var $_app = 'folks';
-
-    function _params()
-    {
-        return array('limit' => array('name' => _("Number of comments to display"),
-                                    'type' => 'int',
-                                    'default' => 10));
-    }
-
+class Folks_Block_MyComments extends Horde_Block
+{
     /**
-     * The title to go in this block.
-     *
-     * @return string   The title text.
      */
-    function _title()
+    public function getName()
     {
         return _("Last comments on my profile");
     }
 
     /**
-     * The content to go in this block.
-     *
-     * @return string   The content
      */
-    function _content()
+    protected function _params()
+    {
+        return array(
+            'limit' => array(
+                'name' => _("Number of comments to display"),
+                'type' => 'int',
+                'default' => 10
+            )
+        );
+    }
+
+    /**
+     */
+    protected function _title()
+    {
+        return $this->getName();
+    }
+
+    /**
+     */
+    protected function _content()
     {
         if (!$GLOBALS['registry']->isAuthenticated()) {
             return '';
