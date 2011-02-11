@@ -1,14 +1,10 @@
 <?php
 /**
- * $Id$
+ * See horde/config/prefs.php for documentation on the structure of this file.
  *
- * Copyright Obala d.o.o. (www.obala.si)
- *
- * See the enclosed file COPYING for license information (GPL). If you
- * did not receive this file, see http://www.fsf.org/copyleft/gpl.html.
- *
- * @author Duck <duck@obala.net>
- * @package Folks
+ * IMPORTANT: Local overrides should be placed in prefs.local.php, or
+ * prefs-servername.php if the 'vhosts' setting has been enabled in Horde's
+ * configuration.
  */
 
 $prefGroups['Preview'] = array(
@@ -121,3 +117,8 @@ $_prefs['log_scope_comments'] = array(
     'enum' => $apps,
     'desc' => _("Application you would like NOT to log activitiy when you post a new PUBLIC COMMENT")
 );
+
+/* Local overrides. */
+if (file_exists(dirname(__FILE__) . '/prefs.local.php')) {
+    include dirname(__FILE__) . '/prefs.local.php';
+}
