@@ -2,7 +2,7 @@
 /**
  * Copyright 2007 Obala d.o.o. (http://www.obala.si/)
  *
- * See the enclosed file COPYING for license information (LGPL). If you
+ * See the enclosed file LICENSE for license information (LGPL). If you
  * did not receive this file, see http://www.horde.org/licenses/lgpl21.
  *
  * @author Duck <duck@obala.net>

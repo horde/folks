@@ -9,7 +9,7 @@
  *
  * Copyright Obala d.o.o. (www.obala.si)
  *
- * See the enclosed file COPYING for license information (GPL). If you
+ * See the enclosed file LICENSE for license information (GPL). If you
  * did not receive this file, see http://www.horde.org/licenses/gpl.
  *
  * @author Duck <duck@obala.net>
