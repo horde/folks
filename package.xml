@@ -16,7 +16,7 @@
   <email>jan@horde.org</email>
   <active>yes</active>
  </lead>
- <date>2017-10-13</date>
+ <date>2017-10-17</date>
  <version>
   <release>1.0.0alpha1</release>
   <api>1.0.0alpha1</api>
@@ -49,10 +49,10 @@
    </dir> <!-- /config -->
    <dir name="doc">
     <file name="CHANGES" role="doc" />
-    <file name="CREDITS" role="doc" />
+    <file name="CREDITS.rst" role="doc" />
     <file name="lighttpd-folks.conf" role="doc" />
     <file name="RELEASE_NOTES" role="doc" />
-    <file name="TODO" role="doc" />
+    <file name="TODO.rst" role="doc" />
    </dir> <!-- /doc -->
    <dir name="edit">
     <dir name="friends">
@@ -286,10 +286,10 @@
    <install as="folks/config/invite.php.dist" name="config/invite.php.dist" />
    <install as="folks/config/prefs.php" name="config/prefs.php" />
    <install as="CHANGES" name="doc/CHANGES" />
-   <install as="CREDITS" name="doc/CREDITS" />
+   <install as="CREDITS.rst" name="doc/CREDITS.rst" />
    <install as="lighttpd-folks.conf" name="doc/lighttpd-folks.conf" />
    <install as="RELEASE_NOTES" name="doc/RELEASE_NOTES" />
-   <install as="TODO" name="doc/TODO" />
+   <install as="TODO.rst" name="doc/TODO.rst" />
    <install as="folks/edit/.directory" name="edit/.directory" />
    <install as="folks/edit/activity.php" name="edit/activity.php" />
    <install as="folks/edit/comments.php" name="edit/comments.php" />
@@ -409,7 +409,7 @@
     <release>alpha</release>
     <api>alpha</api>
    </stability>
-   <date>2017-10-13</date>
+   <date>2017-10-17</date>
    <license uri="TODO">TODO</license>
    <notes>
 * Initial release.
