@@ -27,7 +27,8 @@
  </stability>
  <license uri="TODO">TODO</license>
  <notes>
-* Initial release.
+* [jan] Add Spanish translation (Manuel P. Ayala &lt;mayala@unex.es&gt;).
+* [jan] Add Latvian translation (Jānis Eisaks &lt;jancs@dv.lv&gt;).
  </notes>
  <contents>
   <dir baseinstalldir="/" name="/">
@@ -412,7 +413,8 @@
    <date>2017-10-17</date>
    <license uri="TODO">TODO</license>
    <notes>
-* Initial release.
+* [jan] Add Spanish translation (Manuel P. Ayala &lt;mayala@unex.es&gt;).
+* [jan] Add Latvian translation (Jānis Eisaks &lt;jancs@dv.lv&gt;).
    </notes>
   </release>
  </changelog>
