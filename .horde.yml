@@ -3,7 +3,7 @@ id: folks
 name: Folks
 full: Social network application
 description: TODO
-list:
+list: ~
 type: application
 authors:
   -
@@ -25,8 +25,10 @@ state:
   release: alpha
   api: alpha
 license:
-  identifier: TODO
-  uri: TODO
+  identifier: GPL
+  uri: https://www.horde.org/licenses
 dependencies:
   required:
-    php: ^5.3
+    php: ^7
+  composer:
+    horde/horde: ^6

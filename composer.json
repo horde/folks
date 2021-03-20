@@ -1,36 +1,33 @@
 {
     "name": "horde/folks",
     "description": "Social network application",
-    "type": "project",
+    "type": "horde-application",
     "homepage": "https://www.horde.org",
-    "license": "TODO",
+    "license": "GPL",
     "authors": [
-        {
-            "name": "Chuck Hagenbuch",
-            "email": "chuck@horde.org",
-            "role": "lead"
-        },
         {
             "name": "Jan Schneider",
             "email": "jan@horde.org",
             "role": "lead"
+        },
+        {
+            "name": "Chuck Hagenbuch",
+            "email": "chuck@horde.org",
+            "role": "lead"
         }
     ],
-    "version": "1.0.0alpha1",
-    "time": "2017-11-11",
+    "time": "2021-03-20",
     "repositories": [
         {
-            "type": "pear",
-            "url": "https://pear.horde.org"
+            "type": "composer",
+            "url": "https://horde-satis.maintaina.com/"
         }
     ],
     "require": {
-        "php": "^5.3"
+        "horde/horde-installer-plugin": "*",
+        "php": "^7"
     },
-    "replace": {
-        "pear-pear.horde.org/folks": "1.*",
-        "pear-horde/folks": "1.*"
-    },
+    "suggest": {},
     "autoload": {
         "psr-0": {
             "Folks": "lib/"
