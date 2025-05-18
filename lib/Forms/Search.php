@@ -32,7 +32,7 @@ class Folks_Search_Form extends Horde_Form {
      * @param array $info      Array to be filled with the submitted field
      *                         values.
      */
-    function getInfo($vars, &$info)
+    function getInfo($vars, $info)
     {
         $this->_getInfoFromVariables($this->getVariables(), $this->_vars, $info);
     }
@@ -48,7 +48,7 @@ class Folks_Search_Form extends Horde_Form {
      * @param array  $info       The array to be filled with the submitted
      *                           field values.
      */
-    function _getInfoFromVariables($variables, &$vars, &$info)
+    function _getInfoFromVariables($variables, $vars, $info)
     {
         foreach ($variables as $var) {
             $value = $var->getValue($vars);

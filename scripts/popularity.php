@@ -82,7 +82,7 @@ foreach ($apps as $app => $defs) {
 // calclulate users popolarity
 reset($users);
 $maxp = 0;
-while (list($u,$v) = each($users)) {
+foreach ($users as $u => $v){
     if (!empty($u) && !empty($v)) {
         continue;
     }
@@ -98,7 +98,7 @@ if ($result instanceof PEAR_Error) {
 }
 
 reset($users);
-while ( list($u,$v) = each($users) ) {
+foreach ($users as $u => $v){
     if (!empty($u) && !empty($v)) {
         continue;
     }

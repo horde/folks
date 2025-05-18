@@ -99,7 +99,7 @@ foreach ($comments as $comment_app => $comment_factor) {
 // find max user activity
 reset($users);
 $maxp = 0;
-while (list($u,$v) = each($users)) {
+foreach ($users as $k => $v){
     if (!empty($u) && !empty($v)) {
         if ($v>$maxp) {
             $maxp = $v;
@@ -114,8 +114,7 @@ if ($result instanceof PEAR_Error) {
 }
 
 reset($users);
-while (list($u,$v) = each($users)) {
-
+foreach ($users as $u => $v){
     if (empty($u) && empty($v)) {
         continue;
     }
