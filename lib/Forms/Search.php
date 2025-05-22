@@ -32,11 +32,12 @@ class Folks_Search_Form extends Horde_Form {
      * @param array $info      Array to be filled with the submitted field
      *                         values.
      */
-    function getInfo($vars, $info)
+    public function getInfo($vars = null, $info = [])
     {
-        $this->_getInfoFromVariables($this->getVariables(), $this->_vars, $info);
+        return $this->_getInfoFromVariables($this->getVariables(), $this->_vars, $info);
     }
 
+    // This looks like a copy of the parent class method, investigate
     /**
      * Fetch the field values from a given array of variables.
      *
