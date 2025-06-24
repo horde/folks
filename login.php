@@ -146,7 +146,7 @@ if ($username && $conf['login']['diff']) {
 if ($form->isSubmitted()) {
 
     // check password
-    $form->getInfo(null, $info);
+    $info = $form->getInfo(null, $info);
 
     $result = $folks_driver->comparePassword($username, $info['password']);
     if ($result !== true) {

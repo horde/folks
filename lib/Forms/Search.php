@@ -70,9 +70,9 @@ class Folks_Search_Form extends Horde_Form {
                     }
                     $pointer = &$pointer[$key];
                 }
-                $var->getInfo($vars, $pointer);
+                $pointer = $var->getInfo($vars, $pointer);
             } else {
-                $var->getInfo($vars, $info[$var->getVarName()]);
+                $info[$var->getVarName()] = $var->getInfo($vars, $info[$var->getVarName()]);
             }
 
         }

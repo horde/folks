@@ -27,7 +27,7 @@ if (Horde_Util::getGet('query') && !$form->isSubmitted()) {
         $criteria = array();
     }
 } else {
-    $form->getInfo(null, $criteria);
+    $criteria = $form->getInfo(null, $criteria);
     $session->set('folks', 'last_search', serialize($criteria));
 }
 

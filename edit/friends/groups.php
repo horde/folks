@@ -82,7 +82,7 @@ default:
     $form->addVariable(_("Name"), 'custom_name', 'text', false, false, _("Enter custom name"));
 
     if ($form->validate()) {
-        $form->getInfo(null, $info);
+        $info = $form->getInfo(null, $info);
         if (empty($info['custom_name'])) {
             $name = $info['translated_name'];
         } else {

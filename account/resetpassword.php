@@ -58,7 +58,7 @@ if (!empty($answer)) {
 
 /* Validate the form. */
 if ($form->validate()) {
-    $form->getInfo(null, $info);
+    $info = $form->getInfo(null, $info);
 
     /* Get user email. */
     $email = Folks::getUserEmail($info['username']);

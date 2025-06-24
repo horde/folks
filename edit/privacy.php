@@ -48,7 +48,7 @@ $v->setDefault($prefs->getValue('login_notify'));
 
 if ($form->validate()) {
 
-    $form->getInfo(null, $info);
+    $info = $form->getInfo(null, $info);
 
     // Save pref
     $prefs->setValue('login_notify', $info['login_notify']);
