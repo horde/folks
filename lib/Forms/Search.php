@@ -34,7 +34,10 @@ class Folks_Search_Form extends Horde_Form {
      */
     public function getInfo($vars = null, $info = [])
     {
-        return $this->_getInfoFromVariables($this->getVariables(), $this->_vars, $info);
+        if (is_null($vars)) {
+            $vars = $this->_vars;
+        }
+        return $this->_getInfoFromVariables($this->getVariables(), $vars, $info);
     }
 
     // This looks like a copy of the parent class method, investigate
@@ -60,13 +63,13 @@ class Folks_Search_Form extends Horde_Form {
             require_once 'Horde/Array.php';
             if (Horde_Array::getArrayParts($var->getVarName(), $base, $keys)) {
                 if (!isset($info[$base])) {
-                    $info[$base] = array();
+                    $info[$base] = [];
                 }
                 $pointer = &$info[$base];
                 while (count($keys)) {
                     $key = array_shift($keys);
                     if (!isset($pointer[$key])) {
-                        $pointer[$key] = array();
+                        $pointer[$key] = [];
                     }
                     $pointer = &$pointer[$key];
                 }
@@ -74,7 +77,8 @@ class Folks_Search_Form extends Horde_Form {
             } else {
                 $info[$var->getVarName()] = $var->getInfo($vars, $info[$var->getVarName()]);
             }
-
         }
+
+        return $info;
     }
 }

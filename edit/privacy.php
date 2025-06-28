@@ -47,8 +47,7 @@ $v = $form->addVariable(_("Notify online friends that I logged in"), 'login_noti
 $v->setDefault($prefs->getValue('login_notify'));
 
 if ($form->validate()) {
-
-    $info = $form->getInfo(null, $info);
+    $info = $form->getInfo();
 
     // Save pref
     $prefs->setValue('login_notify', $info['login_notify']);

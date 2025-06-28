@@ -19,7 +19,7 @@ $form->addVariable(_("Your email"), 'email', 'email', true);
 
 /* Validate the form. */
 if ($form->validate()) {
-    $info = $form->getInfo(null, $info);
+    $info = $form->getInfo();
 
     $users = $folks_driver->getUsers(array('email' => $info['email']));
     if ($users instanceof PEAR_Error) {

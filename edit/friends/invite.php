@@ -39,7 +39,7 @@ try {
 $v->setDefault($body);
 
 if ($form->validate()) {
-    $info = $form->getInfo(null, $info);
+    $info = $form->getInfo();
     $result = Folks::sendMail($info['email'], $info['subject'], $info['body']);
     if ($result instanceof PEAR_Error) {
         $notification->push($result);
