@@ -36,7 +36,7 @@ do {
         break;
     }
 
-    $info = $form->getInfo(null, $info);
+    $info = $form->getInfo();
 
     // Check old and new passwords
     if ($info['old'] == $info['new']) {

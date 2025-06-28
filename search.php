@@ -24,7 +24,7 @@ if (Horde_Util::getGet('query') && !$form->isSubmitted()) {
     $criteria = $folks_driver->getSearchCriteria(Horde_Util::getGet('query'));
     if ($criteria instanceof PEAR_Error) {
         $notification->push($criteria);
-        $criteria = array();
+        $criteria = [];
     }
 } else {
     $criteria = $form->getInfo(null, $criteria);

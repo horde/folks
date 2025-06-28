@@ -52,7 +52,7 @@ if ($form->validate()) {
     switch (Horde_Util::getFormData('submitbutton')) {
 
     case _("Save"):
-        $info = $form->getInfo(null, $info);
+        $info = $form->getInfo();
         $info['user_description'] = strip_tags($info['user_description']);
         $info['user_city'] = strip_tags($info['user_city']);
         $info['user_url'] = strip_tags($info['user_url']);

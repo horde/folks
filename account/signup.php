@@ -28,7 +28,7 @@ if ($signup instanceof PEAR_Error) {
 $vars = Horde_Variables::getDefaultVariables();
 $form = new Horde_Core_Auth_Signup_Form($vars);
 if ($form->validate()) {
-    $info = $form->getInfo(null, $info);
+    $info = $form->getInfo();
     try {
         if ($conf['signup']['approve']) {
             /* Insert this user into a queue for admin approval. */
