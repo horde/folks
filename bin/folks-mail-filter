@@ -12,78 +12,82 @@
  * @package Folks
  */
 
-function usage()
-{
-    $argv = Console_Getopt::readPHPArgv();
-    $cmd = basename($argv[0]);
-    echo <<<EOU
-Usage: $cmd [options]
-
-This script parses MIME messages and deactivates users with returned emails.
-
-Options:
-    -h, --help           Give this help.
-    -u, --username       A user to send notificatons with.
-        --mail-host      The IMAP/POP3 server to get the messages from.
-                         Defaults to "localhost".
-        --mail-user      The user name for the mail server.
-        --mail-pass      The password for the mail server.
-        --mail-port      The mail server port. Defaults to "143".
-        --mail-protocol  The mail server protocol. Defaults to "imap/notls".
-        --mail-folder    The folder on the mail server. Defaults to "INBOX".
-
-EOU;
-}
+use Horde\Argv\Parser;
+use Horde\Argv\Option;
 
 require_once __DIR__ . '/../lib/Application.php';
 Horde_Registry::appInit('folks', array('cli' => true));
 
-// Read command-line parameters.
-$info = array();
-$mail = array('host' => 'localhost',
-              'pass' => '',
-              'port' => 143,
-              'protocol' => 'imap/notls',
-              'folder' => 'INBOX');
-$from_mail = false;
-$options = Console_Getopt::getopt(Console_Getopt::readPHPArgv(),
-                                  'h:u',
-                                  array('help', 'username=',
-                                        'mail-host=', 'mail-user=',
-                                        'mail-pass=', 'mail-port=',
-                                        'mail-protocol=', 'mail-folder='));
-if ($options instanceof PEAR_Error) {
-    usage();
-    $cli->fatal($options->getMessage());
+// Parse command-line options using Horde\Argv\Parser
+$parser = new Parser([
+    'usage' => '%prog [OPTIONS]',
+    'description' => 'Parse MIME messages and deactivate users with returned emails',
+    'optionList' => [
+        new Option('-u', '--username', [
+            'type' => 'string',
+            'dest' => 'username',
+            'help' => 'A user to send notifications with',
+            'metavar' => 'USER'
+        ]),
+        new Option('--mail-host', [
+            'type' => 'string',
+            'dest' => 'mail_host',
+            'default' => 'localhost',
+            'help' => 'The IMAP/POP3 server to get messages from (default: localhost)',
+            'metavar' => 'HOST'
+        ]),
+        new Option('--mail-user', [
+            'type' => 'string',
+            'dest' => 'mail_user',
+            'help' => 'The user name for the mail server',
+            'metavar' => 'USER'
+        ]),
+        new Option('--mail-pass', [
+            'type' => 'string',
+            'dest' => 'mail_pass',
+            'default' => '',
+            'help' => 'The password for the mail server',
+            'metavar' => 'PASS'
+        ]),
+        new Option('--mail-port', [
+            'type' => 'int',
+            'dest' => 'mail_port',
+            'default' => 143,
+            'help' => 'The mail server port (default: 143)',
+            'metavar' => 'PORT'
+        ]),
+        new Option('--mail-protocol', [
+            'type' => 'string',
+            'dest' => 'mail_protocol',
+            'default' => 'imap/notls',
+            'help' => 'The mail server protocol (default: imap/notls)',
+            'metavar' => 'PROTO'
+        ]),
+        new Option('--mail-folder', [
+            'type' => 'string',
+            'dest' => 'mail_folder',
+            'default' => 'INBOX',
+            'help' => 'The folder on the mail server (default: INBOX)',
+            'metavar' => 'FOLDER'
+        ])
+    ]
+]);
+
+list($opts, $args) = $parser->parseArgs();
+
+if (!$opts->username) {
+    $parser->parserError('--username is required');
 }
 
-// Convert options into a hash. This is possible because all options are only
-// allowed once.
-$opts_hash = array();
-list($opts, $args) = $options;
-foreach ($opts as $opt) {
-    list($optName, $optValue) = $opt;
-    switch ($optName) {
-        case 'h': $optName = '--help'; break;
-        case 'u': $optName = '--username'; break;
-    }
-    $opts_hash[$optName] = is_null($optValue) ? true : $optValue;
-}
-
-// Process options in this order because some depend on others.
-if (isset($opts_hash['--help'])) {
-    usage();
-    exit;
-}
-if (!isset($opts_hash['--username'])) {
-    usage();
-    exit;
-}
-foreach (array('host', 'user', 'pass', 'port', 'protocol', 'folder') as $opt) {
-    if (isset($opts_hash['--mail-' . $opt])) {
-        $mail[$opt] = $opts_hash['--mail-' . $opt];
-    }
-}
+// Build mail configuration array
+$mail = [
+    'host' => $opts->mail_host,
+    'user' => $opts->mail_user,
+    'pass' => $opts->mail_pass,
+    'port' => $opts->mail_port,
+    'protocol' => $opts->mail_protocol,
+    'folder' => $opts->mail_folder
+];
 
 // Read and parse the message.
 $messages = array();
@@ -145,7 +149,6 @@ $query = 'SELECT DISTINCT user_uid FROM folks_users WHERE user_email'
 $users = $db->getCol($query);
 if ($user_uid instanceof PEAR_Error) {
     $cli->fatal($user_uid);
-    continue;
 } elseif (empty($users)) {
     $cli->fatal(_("Have no one to notify"));
 }
@@ -156,7 +159,7 @@ $title = _("Email problem");
 $body = _("Dear %s, we tried to send you an email, but if turns out that the mail is usable any more. Maybe you run over quota. If your mail is discontinued, please update your profile with the email you are using now at %s.");
 
 // Horde Auto login to send messages with
-$registry->setAuth($opts_hash['--username'], array('transparent' => 1));
+$registry->setAuth($opts->username, array('transparent' => 1));
 
 // Send messages
 foreach ($users as $user) {

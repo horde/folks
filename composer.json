@@ -24,13 +24,18 @@
         }
     ],
     "require": {
-        "horde/horde-installer-plugin": "*",
-        "php": "^7"
+        "php": "^8",
+        "horde/base": "^6",
+        "horde/horde": "^6",
+        "horde/horde-installer-plugin": "*"
     },
     "suggest": {},
     "autoload": {
-        "psr-0": {
-            "Folks": "lib/"
+        "classmap": [
+            "lib/"
+        ],
+        "psr-4": {
+            "Horde\\Folks\\": "src/"
         }
     }
 }
