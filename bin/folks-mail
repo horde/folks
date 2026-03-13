@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 /**
  * Send mail to a user that has new messages
@@ -11,54 +12,47 @@
  * @package Folks
  */
 
+use Horde\Argv\Parser;
+use Horde\Argv\Option;
+
 require_once __DIR__ . '/../lib/Application.php';
 Horde_Registry::appInit('folks', array('cli' => true, 'no_compress' => true));
 
-// We accept the user name on the command-line.
-$ret = Console_Getopt::getopt(Console_Getopt::readPHPArgv(), 'h:u:p:dt:f:c:',
-                              array('help', 'username=', 'password=', 'time=', 'from=', 'count='));
+// Parse command-line options using Horde\Argv\Parser
+$parser = new Parser([
+    'usage' => '%prog [OPTIONS]',
+    'description' => 'Send mail notification to users with new messages',
+    'optionList' => [
+        new Option('-u', '--username', [
+            'type' => 'string',
+            'dest' => 'username',
+            'help' => 'Horde login username'
+        ]),
+        new Option('-p', '--password', [
+            'type' => 'string',
+            'dest' => 'password',
+            'help' => 'Horde login password'
+        ]),
+        new Option('-f', '--from', [
+            'type' => 'int',
+            'dest' => 'from',
+            'default' => 0,
+            'help' => 'Limit offset (default: 0)'
+        ]),
+        new Option('-c', '--count', [
+            'type' => 'int',
+            'dest' => 'count',
+            'help' => 'Limit count'
+        ])
+    ]
+]);
 
-if ($ret instanceof PEAR_Error) {
-    $error = _("Couldn't read command-line options.");
-    Horde::log($error, 'DEBUG');
-    $cli->fatal($error);
-}
+list($opts, $args) = $parser->parseArgs();
 
-// Show help and exit if no arguments were set.
-list($opts, $args) = $ret;
-if (!$opts) {
-    showHelp();
-    exit;
-}
-
-foreach ($opts as $opt) {
-    list($optName, $optValue) = $opt;
-    switch ($optName) {
-    case 'u':
-    case '--username':
-        $username = $optValue;
-        break;
-
-    case 'p':
-    case '--password':
-        $password = $optValue;
-        break;
-
-    case 'f':
-    case '--from':
-        $from = (int)$optValue;
-
-    case 'c':
-    case '--count':
-        $count = (int)$optValue;
-        break;
-
-    case 'h':
-    case '--help':
-        showHelp();
-        exit;
-    }
-}
+$username = $opts->username;
+$password = $opts->password;
+$from = $opts->from;
+$count = $opts->count;
 
 // Login to horde if username & password are set.
 if (!empty($username) && !empty($password)) {
@@ -123,22 +117,3 @@ while ($row =& $res->fetchRow()) {
 }
 
 $cli->message('done', 'cli.success');
-
-/**
- * Show the command line arguments that the script accepts.
- */
-function showHelp()
-{
-    global $cli;
-
-    $cli->writeln(sprintf(_("Usage: %s [OPTIONS]..."), basename(__FILE__)));
-    $cli->writeln();
-    $cli->writeln(_("Mandatory arguments to long options are mandatory for short options too."));
-    $cli->writeln();
-    $cli->writeln(_("-h, --help                   Show this help"));
-    $cli->writeln(_("-c, --count                  Limit count"));
-    $cli->writeln(_("-f, --from                   Limit offset"));
-    $cli->writeln(_("-u, --username[=username]    Horde login username"));
-    $cli->writeln(_("-p, --password[=password]    Horde login password"));
-    $cli->writeln();
-}

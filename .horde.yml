@@ -29,6 +29,13 @@ license:
   uri: https://www.horde.org/licenses
 dependencies:
   required:
-    php: ^7
-  composer:
-    horde/horde: ^6
+    php: ^8
+    composer:
+      horde/base: ^6
+      horde/horde: ^6
+autoload:
+  classmap:
+    - lib/
+  psr-4:
+    Horde\Folks\: src/
+vendor: horde
