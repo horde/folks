@@ -97,6 +97,12 @@ $page_output->header(array(
 require FOLKS_TEMPLATES . '/menu.inc';
 
 echo $tabs->render('edit');
-$form->renderActive(null, null, null, 'post');
+$form->renderActive(
+    renderer: null,
+    vars: null,
+    action: null,
+    method: 'post',
+    enctype: 'multipart/form-data'
+);
 
 $page_output->footer();
