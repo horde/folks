@@ -22,7 +22,7 @@ class Folks {
      */
     static function format_date($time)
     {
-        return strftime($GLOBALS['prefs']->getValue('date_format'), $time);
+        return \Horde\Date\Format::formatDate($time, $GLOBALS['prefs']->getValue('date_format'), $GLOBALS['language'] ?? 'en_US');
     }
 
     /**
@@ -32,7 +32,7 @@ class Folks {
      */
     static function format_datetime($time)
     {
-        return strftime($GLOBALS['prefs']->getValue('date_format'), $time)
+        return \Horde\Date\Format::formatDate($time, $GLOBALS['prefs']->getValue('date_format'), $GLOBALS['language'] ?? 'en_US')
             . ' '
             . (date($GLOBALS['prefs']->getValue('twentyFour') ? 'G:i' : 'g:ia', $time));
     }
