@@ -4,17 +4,22 @@
 <?php
 endif;
 if (!empty($queries)):
-?>
+    ?>
 <br />
 <br />
 <table class="striped" style="width: 100%">
 <h1 class="header"><?php echo _("My queries") ?></h1>
 <?php
 foreach ($queries as $query) {
+    /**
+     * ARCHITECTURE VIOLATION: Using deprecated Horde::img()
+     * @deprecated Use Horde_Themes_Image::tag() instead
+     * @see Horde_Deprecated::img()
+     */
     $delete_img = Horde::img('delete.png', _("Delete"));
     echo '<tr><td>' . Horde::link(Horde::url('search.php')->add('query', $query), '', 'bottom') . $query . '</a></td>';
-    echo '<td>' . Horde::link(Horde::url('save_search.php')->add(array('query' => $query, 'delete' => 1))) . $delete_img . '</a></td></tr>';
+    echo '<td>' . Horde::link(Horde::url('save_search.php')->add(['query' => $query, 'delete' => 1])) . $delete_img . '</a></td></tr>';
 }
-?>
+    ?>
 </table>
 <?php endif; ?>

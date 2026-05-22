@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Folks Notification Class.
  *
@@ -10,8 +11,8 @@
  * @author  Duck <duck@obala.net>
  * @package Folks
  */
-class Folks_Notification_facebook extends Folks_Notification {
-
+class Folks_Notification_facebook extends Folks_Notification
+{
     /**
      * FB object
      */
@@ -63,7 +64,7 @@ class Folks_Notification_facebook extends Folks_Notification {
      *
      * @return true on succes, PEAR_Error on failure
      */
-    public function notify($user, $subject, $body, $attachments = array())
+    public function notify($user, $subject, $body, $attachments = [])
     {
         if (!$this->_loadFB()) {
             return $this->_fb;
@@ -71,7 +72,7 @@ class Folks_Notification_facebook extends Folks_Notification {
 
         try {
             $message = $this->_formatBody($subject, $body);
-            $result = $this->_fb->notifications->send(array($this->_fbp['uid']), $message, 'user_to_user');
+            $result = $this->_fb->notifications->send([$this->_fbp['uid']], $message, 'user_to_user');
         } catch (Horde_Service_Facebook_Exception $e) {
             return PEAR::raiseError($e->getMessage(), $e->getCode());
         }
@@ -89,7 +90,7 @@ class Folks_Notification_facebook extends Folks_Notification {
      *
      * @return true on succes, PEAR_Error on failure
      */
-    public function notifyFriends($user, $subject, $body, $attachments = array())
+    public function notifyFriends($user, $subject, $body, $attachments = [])
     {
         if (!$this->_loadFB()) {
             return $this->_fb;
@@ -160,6 +161,6 @@ class Folks_Notification_facebook extends Folks_Notification {
     private function _formatBody($subject, $body)
     {
         return '<b>' . $subject . ':</b> '
-                . $GLOBALS['injector']->getInstance('Horde_Core_Factory_TextFilter')->filter($body, 'text2html', array('parselevel' => Horde_Text_Filter_Text2html::MICRO_LINKURL));
+                . $GLOBALS['injector']->getInstance('Horde_Core_Factory_TextFilter')->filter($body, 'text2html', ['parselevel' => Horde_Text_Filter_Text2html::MICRO_LINKURL]);
     }
 }

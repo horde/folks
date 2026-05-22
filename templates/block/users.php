@@ -16,7 +16,7 @@
     } else {
         echo '<span class="offline">' . _("Offline") . '</span>';
     }
-?>
+    ?>
 
 </span>
 </td>

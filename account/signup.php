@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright 2007 Obala d.o.o. (http://www.obala.si/)
+ * Copyright 2007-2026 Obala d.o.o. (http://www.obala.si/)
  *
  * See the enclosed file LICENSE for license information (LGPL). If you
  * did not receive this file, see http://www.horde.org/licenses/lgpl21.
@@ -13,8 +14,8 @@ require_once __DIR__ . '/tabs.php';
 $auth = $injector->getInstance('Horde_Core_Factory_Auth')->create();
 
 // Make sure signups are enabled before proceeding
-if ($conf['signup']['allow'] !== true ||
-    !$auth->hasCapability('add')) {
+if ($conf['signup']['allow'] !== true
+    || !$auth->hasCapability('add')) {
     $notification->push(_("User Registration has been disabled for this site."), 'horde.error');
     throw new Horde_Exception_AuthenticationFailure();
 }
@@ -47,9 +48,9 @@ if ($form->validate()) {
     }
 }
 
-$page_output->header(array(
-    'title' => _("Sign up")
-));
+$page_output->header([
+    'title' => _("Sign up"),
+]);
 require FOLKS_TEMPLATES . '/menu.inc';
 require FOLKS_TEMPLATES . '/login/signup.php';
 $page_output->footer();

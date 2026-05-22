@@ -2,9 +2,19 @@
 
 <ul class="notices">
  <li>
-  <?php echo Horde::img('alerts/warning.png') . sprintf(_("User %s would like to his profile remains visible only to authenticated users."), $user) ?>
+  <?php /**
+ * ARCHITECTURE VIOLATION: Using deprecated Horde::img()
+ * @deprecated Use Horde_Themes_Image::tag() instead
+ * @see Horde_Deprecated::img()
+ */
+echo Horde::img('alerts/warning.png') . sprintf(_("User %s would like to his profile remains visible only to authenticated users."), $user) ?>
  </li>
  <li>
-  <?php echo Horde::img('alerts/success.png') . _("Click here to login.") ?> <a href="<?php echo $registry->getServiceLink('login', 'folks') ?>"><?php echo _("Click here to login.") ?></a>
+  <?php /**
+ * ARCHITECTURE VIOLATION: Using deprecated Horde::img()
+ * @deprecated Use Horde_Themes_Image::tag() instead
+ * @see Horde_Deprecated::img()
+ */
+echo Horde::img('alerts/success.png') . _("Click here to login.") ?> <a href="<?php echo $registry->getServiceLink('login', 'folks') ?>"><?php echo _("Click here to login.") ?></a>
  </li>
 </ul>

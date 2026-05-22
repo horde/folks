@@ -1,4 +1,7 @@
 <?php
+
+use Horde\Util\Util;
+
 /**
  * Folks base application file.
  *
@@ -18,7 +21,7 @@ require_once HORDE_BASE . '/lib/core.php';
 
 // Registry.
 $registry = new Horde_Registry();
-$registry->pushApp('folks', array('check_perms' => (Horde_Util::nonInputVar('folks_authentication') != 'none')));
+$registry->pushApp('folks', ['check_perms' => (Util::nonInputVar('folks_authentication') != 'none')]);
 
 $conf = &$GLOBALS['conf'];
 
@@ -36,5 +39,5 @@ $GLOBALS['cache'] = $injector->getInstance('Horde_Cache');
 $GLOBALS['folks_driver']->updateOnlineStatus();
 
 // Start output compression.
-if (!Horde_Util::nonInputVar('no_compress')) {
+if (!Util::nonInputVar('no_compress')) {
 }

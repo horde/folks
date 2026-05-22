@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @author  Duck <duck@obala.net>
  * @package Folks
@@ -7,7 +8,7 @@ class Folks_Block_Activities extends Horde_Core_Block
 {
     /**
      */
-    public function __construct($app, $params = array())
+    public function __construct($app, $params = [])
     {
         parent::__construct($app, $params);
 
@@ -18,13 +19,13 @@ class Folks_Block_Activities extends Horde_Core_Block
      */
     protected function _params()
     {
-        return array(
-            'limit' => array(
+        return [
+            'limit' => [
                 'name' => _("Number of activities to display"),
                 'type' => 'int',
-                'default' => 10
-            )
-        );
+                'default' => 10,
+            ],
+        ];
     }
 
     /**
@@ -40,7 +41,7 @@ class Folks_Block_Activities extends Horde_Core_Block
         }
 
         // Get friends activities
-        $list = array();
+        $list = [];
         foreach ($friend_list as $user) {
             $activities = $GLOBALS['folks_driver']->getActivity($user);
             if ($activities instanceof PEAR_Error) {

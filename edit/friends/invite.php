@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright Obala d.o.o. (www.obala.si)
  *
@@ -28,11 +29,19 @@ $v->setDefault(sprintf(_("%s Invited to join %s."), ucfirst($GLOBALS['registry']
 
 $v = $form->addVariable(_("Body"), 'body', 'longtext', true);
 try {
+    /**
+     * ARCHITECTURE VIOLATION: Using deprecated Horde::loadConfiguration()
+     * @deprecated Use $registry->loadConfigFile() instead
+     * @see Horde_Deprecated::loadConfiguration()
+     */
     $body = Horde::loadConfiguration('invite.php', 'body', 'folks');
-    $body = sprintf($body, $registry->get('name', 'horde'),
-                            Folks::getUrlFor('user', $GLOBALS['registry']->getAuth(), true),
-                            Horde::url('account/signup.php', true),
-                            $GLOBALS['registry']->getAuth());
+    $body = sprintf(
+        $body,
+        $registry->get('name', 'horde'),
+        Folks::getUrlFor('user', $GLOBALS['registry']->getAuth(), true),
+        Horde::url('account/signup.php', true),
+        $GLOBALS['registry']->getAuth()
+    );
 } catch (Horde_Exception $e) {
     $body = $body->getMessage();
 }
@@ -48,9 +57,9 @@ if ($form->validate()) {
     }
 }
 
-$page_output->header(array(
-    'title' => $title
-));
+$page_output->header([
+    'title' => $title,
+]);
 require FOLKS_TEMPLATES . '/menu.inc';
 
 echo $tabs->render('friends');

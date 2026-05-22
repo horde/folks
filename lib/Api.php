@@ -1,8 +1,9 @@
 <?php
+
 /**
  * Folks api
  *
- * Copyright 2008 Obala d.o.o (www.obala.si)
+ * Copyright 2008-2026 Obala d.o.o (www.obala.si)
  *
  * See the enclosed file LICENSE for license information (BSD). If you
  * did not receive this file, see http://cvs.horde.org/co.php/folks/LICENSE.
@@ -17,9 +18,9 @@ class Folks_Api extends Horde_Registry_Api
      *
      * @var array
      */
-    protected $_links = array(
-        'show' => '%application%/user.php?user=|user|'
-    );
+    protected $_links = [
+        'show' => '%application%/user.php?user=|user|',
+    ];
 
     /**
      */
@@ -27,7 +28,7 @@ class Folks_Api extends Horde_Registry_Api
     {
         return array_merge(
             parent::disabled(),
-            $GLOBALS['registry']->isAdmin() ? array('removeUser', 'userList') : array()
+            $GLOBALS['registry']->isAdmin() ? ['removeUser', 'userList'] : []
         );
     }
 
@@ -64,26 +65,26 @@ class Folks_Api extends Horde_Registry_Api
         require_once __DIR__ . '/base.php';
 
         switch ($type) {
-        case 'owner':
-            return $id;
+            case 'owner':
+                return $id;
 
-        case 'link':
-            return Folks::getUrlFor('user', $id);
+            case 'link':
+                return Folks::getUrlFor('user', $id);
 
-        case 'messages':
+            case 'messages':
 
-            // Update comments count
-            $result = $GLOBALS['folks_driver']->updateComments($id);
-            if ($result instanceof PEAR_Error) {
-                return $result;
-            }
+                // Update comments count
+                $result = $GLOBALS['folks_driver']->updateComments($id);
+                if ($result instanceof PEAR_Error) {
+                    return $result;
+                }
 
-            // Update activity log
-            $link = '<a href="' . Folks::getUrlFor('user', $id) . '">' . $id . '</a>';
-            return $GLOBALS['folks_driver']->logActivity(sprintf(_("Commented user %s."), $link), 'folks:comments');
+                // Update activity log
+                $link = '<a href="' . Folks::getUrlFor('user', $id) . '">' . $id . '</a>';
+                return $GLOBALS['folks_driver']->logActivity(sprintf(_("Commented user %s."), $link), 'folks:comments');
 
-        default:
-            return $id;
+            default:
+                return $id;
         }
     }
 
@@ -129,7 +130,7 @@ class Folks_Api extends Horde_Registry_Api
     {
         require_once __DIR__ . '/Friends.php';
 
-        $friends = Folks_Friends::singleton('sql', array('user' => $user));
+        $friends = Folks_Friends::singleton('sql', ['user' => $user]);
 
         return $friends->getFriends();
     }
@@ -145,7 +146,7 @@ class Folks_Api extends Horde_Registry_Api
     {
         require_once __DIR__ . '/Friends.php';
 
-        $friends = Folks_Friends::singleton('sql', array('user' => $user));
+        $friends = Folks_Friends::singleton('sql', ['user' => $user]);
 
         return $friends->addFriend($user);
     }
@@ -161,7 +162,7 @@ class Folks_Api extends Horde_Registry_Api
     {
         require_once __DIR__ . '/Friends.php';
 
-        $friends = Folks_Friends::singleton('sql', array('user' => $user));
+        $friends = Folks_Friends::singleton('sql', ['user' => $user]);
 
         return $friends->removeFriend($user);
     }
@@ -177,7 +178,7 @@ class Folks_Api extends Horde_Registry_Api
     {
         require_once __DIR__ . '/Friends.php';
 
-        $friends = Folks_Friends::singleton('sql', array('user' => $user));
+        $friends = Folks_Friends::singleton('sql', ['user' => $user]);
 
         return $friends->getBlacklist();
     }
@@ -191,7 +192,7 @@ class Folks_Api extends Horde_Registry_Api
     {
         require_once __DIR__ . '/Friends.php';
 
-        $friends = Folks_Friends::singleton('sql', array('user' => $user));
+        $friends = Folks_Friends::singleton('sql', ['user' => $user]);
 
         return $friends->addBlacklisted($user);
     }
@@ -205,7 +206,7 @@ class Folks_Api extends Horde_Registry_Api
     {
         require_once __DIR__ . '/Friends.php';
 
-        $friends = Folks_Friends::singleton('sql', array('user' => $user));
+        $friends = Folks_Friends::singleton('sql', ['user' => $user]);
 
         return $friends->removeBlacklisted($user);
     }
@@ -221,7 +222,7 @@ class Folks_Api extends Horde_Registry_Api
     {
         require_once __DIR__ . '/Friends.php';
 
-        $friends = Folks_Friends::singleton('sql', array('user' => $user));
+        $friends = Folks_Friends::singleton('sql', ['user' => $user]);
 
         return $friends->isBlacklisted($GLOBALS['registry']->getAuth());
     }
@@ -231,7 +232,7 @@ class Folks_Api extends Horde_Registry_Api
      */
     public function listTimeObjectCategories()
     {
-        return array('birthday_friends' => array('title' => _("Friends Birthdays"), 'type' => 'single'));
+        return ['birthday_friends' => ['title' => _("Friends Birthdays"), 'type' => 'single']];
     }
 
     /**
@@ -249,10 +250,10 @@ class Folks_Api extends Horde_Registry_Api
         $friends_driver = Folks_Friends::singleton('sql');
         $friends = $friends_driver->getFriends();
         if ($friends instanceof PEAR_Error) {
-            return array();
+            return [];
         }
 
-        $objects = array();
+        $objects = [];
 
         foreach ($friends as $friend) {
             $user = $GLOBALS['folks_driver']->getProfile($friend);
@@ -262,23 +263,23 @@ class Folks_Api extends Horde_Registry_Api
 
             $user['user_birthday'] = date('Y') . substr($user['user_birthday'], 4);
             $born = strtotime($user['user_birthday']);
-            if ($born === false ||
-                $born < $start->timestamp() ||
-                $born > $end->timestamp()) {
-                    continue;
-                }
+            if ($born === false
+                || $born < $start->timestamp()
+                || $born > $end->timestamp()) {
+                continue;
+            }
 
             $age = Folks::calcAge($user['user_birthday']);
             $desc = $age['age'] . ' (' . $age['sign'] . ')';
 
-            $objects[$friend] = array(
+            $objects[$friend] = [
                 'title' => $friend,
                 'description' => $desc,
                 'id' => $friend,
                 'start' => date('Y-m-d\TH:i:s', $born),
                 'end' => date('Y-m-d\TH:i:s', $born + 1),
-                'params' => array('user' => $friend),
-                'link' => Folks::getUrlFor('user', $friend, true));
+                'params' => ['user' => $friend],
+                'link' => Folks::getUrlFor('user', $friend, true)];
         }
 
         return $objects;
@@ -297,8 +298,8 @@ class Folks_Api extends Horde_Registry_Api
     {
         if (empty($user)) {
             $user = $GLOBALS['registry']->getAuth();
-        } elseif ($user !== $GLOBALS['registry']->getAuth() &&
-                  !$GLOBALS['registry']->isAdmin(array('permission' => 'admin:' . $scope))) {
+        } elseif ($user !== $GLOBALS['registry']->getAuth()
+                  && !$GLOBALS['registry']->isAdmin(['permission' => 'admin:' . $scope])) {
             return PEAR::raiseError(_("You cannot log activities for other users."));
         }
 

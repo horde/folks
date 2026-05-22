@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright Obala d.o.o. (www.obala.si)
  *
@@ -23,15 +24,15 @@ if (!$conf['facebook']['enabled']) {
 
 // Load horde central block
 try {
-    $block = $registry->call('horde/blockContent', array('horde', 'fb_summary'));
+    $block = $registry->call('horde/blockContent', ['horde', 'fb_summary']);
 } catch (Horde_Exception $e) {
     $notification->push($e);
     Horde::url('user.php')->redirect();
 }
 
-$page_output->header(array(
-    'title' => $title
-));
+$page_output->header([
+    'title' => $title,
+]);
 require FOLKS_TEMPLATES . '/menu.inc';
 echo $tabs->render('facebook');
 echo $block;

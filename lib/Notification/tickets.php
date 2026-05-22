@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Folks Notification Class.
  *
@@ -10,8 +11,8 @@
  * @author  Duck <duck@obala.net>
  * @package Folks
  */
-class Folks_Notification_tickets extends Folks_Notification {
-
+class Folks_Notification_tickets extends Folks_Notification
+{
     /**
      * Returns method human name
      */
@@ -29,8 +30,8 @@ class Folks_Notification_tickets extends Folks_Notification {
      */
     public function isAvailable($type)
     {
-        if (!$GLOBALS['registry']->hasInterface('tickets') ||
-                $type == 'admins') {
+        if (!$GLOBALS['registry']->hasInterface('tickets')
+                || $type == 'admins') {
             return false;
         }
 
@@ -47,28 +48,31 @@ class Folks_Notification_tickets extends Folks_Notification {
      *
      * @return true on succes, PEAR_Error on failure
      */
-    public function notify($user, $subject, $body, $attachments = array())
+    public function notify($user, $subject, $body, $attachments = [])
     {
         global $registry;
 
-        $info = array_merge($this->_params['ticket_params'],
-                            array('summary' => $subject,
-                                    'comment' => $body,
-                                    'user_email' => $this->_getUserFromAddr()));
+        $info = array_merge(
+            $this->_params['ticket_params'],
+            ['summary' => $subject,
+                'comment' => $body,
+                'user_email' => $this->_getUserFromAddr()]
+        );
 
-        $ticket_id = $registry->call('tickets/addTicket', array($info));
+        $ticket_id = $registry->call('tickets/addTicket', [$info]);
 
-        if (empty($attachments) ||
-            !$registry->hasMethod('tickets/addAttachment')) {
+        if (empty($attachments)
+            || !$registry->hasMethod('tickets/addAttachment')) {
             return $result;
         }
 
         foreach ($attachments as $attachment) {
             $result = $registry->call(
                 'tickets/addAttachment',
-                        array('ticket_id' => $ticket_id,
-                                'name' => $attachment['name'],
-                                'data' => file_get_contents($attachment['file'])));
+                ['ticket_id' => $ticket_id,
+                    'name' => $attachment['name'],
+                    'data' => file_get_contents($attachment['file'])]
+            );
         }
 
         return true;

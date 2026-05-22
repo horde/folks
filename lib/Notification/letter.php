@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Folks Notification Class.
  *
@@ -10,8 +11,8 @@
  * @author  Duck <duck@obala.net>
  * @package Folks
  */
-class Folks_Notification_letter extends Folks_Notification {
-
+class Folks_Notification_letter extends Folks_Notification
+{
     /**
      * Returns method human name
      */
@@ -46,17 +47,20 @@ class Folks_Notification_letter extends Folks_Notification {
      *
      * @return true on succes, PEAR_Error on failure
      */
-    public function notify($user, $subject, $body, $attachments = array())
+    public function notify($user, $subject, $body, $attachments = [])
     {
         if (empty($user)) {
             return true;
         }
 
         return $GLOBALS['registry']->callByPackage(
-            'letter', 'sendMessage', array($user,
-                                           array('title' => $subject,
-                                                 'content' => $body,
-                                                 'attachments' => $attachments)));
+            'letter',
+            'sendMessage',
+            [$user,
+                ['title' => $subject,
+                    'content' => $body,
+                    'attachments' => $attachments]]
+        );
     }
 
     /**
@@ -69,7 +73,7 @@ class Folks_Notification_letter extends Folks_Notification {
      *
      * @return true on succes, PEAR_Error on failure
      */
-    public function notifyFriends($user, $subject, $body, $attachments = array())
+    public function notifyFriends($user, $subject, $body, $attachments = [])
     {
         $friends = $GLOBALS['registry']->call('users/getFriends');
         return $this->notify($friends, $subject, $body, $attachments);

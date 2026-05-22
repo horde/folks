@@ -1,4 +1,7 @@
 <?php
+
+use Horde\Util\Util;
+
 /**
  * Folks_Driver:: defines an API for implementing storage backends for
  * Folks.
@@ -12,14 +15,14 @@
  * @package Folks
  */
 
-class Folks_Driver {
-
+class Folks_Driver
+{
     /**
      * Hash containing connection parameters.
      *
      * @var array
      */
-    protected $_params = array();
+    protected $_params = [];
 
     /**
      * Attempts to return a concrete Folks_Driver instance based on $driver.
@@ -73,7 +76,7 @@ class Folks_Driver {
         $vfspath = Folks::VFS_PATH . '/' . substr(str_pad($p, 2, 0, STR_PAD_LEFT), -2) . '/';
         $vfs_name = $p . '.' . $conf['images']['image_type'];
         try {
-            $img = $GLOBALS['injector']->getInstance('Horde_Core_Factory_Image')->create(array('type' => $conf['images']['image_type']));
+            $img = $GLOBALS['injector']->getInstance('Horde_Core_Factory_Image')->create(['type' => $conf['images']['image_type']]);
             $result = $img->loadFile($file);
         } catch (Horde_Exception $e) {
             throw new Horde_Exception_Wrapped($e);
@@ -82,8 +85,10 @@ class Folks_Driver {
         if ($dimensions instanceof PEAR_Error) {
             return $dimensions;
         }
-        $img->resize(min($conf['images']['screen_width'], $dimensions['width']),
-                        min($conf['images']['screen_height'], $dimensions['height']));
+        $img->resize(
+            min($conf['images']['screen_width'], $dimensions['width']),
+            min($conf['images']['screen_height'], $dimensions['height'])
+        );
 
         // Store big image
         try {
@@ -94,8 +99,10 @@ class Folks_Driver {
 
         // Resize thumbnail
         $dimensions = $img->getDimensions();
-        $img->resize(min($conf['images']['thumbnail_width'], $dimensions['width']),
-                     min($conf['images']['thumbnail_height'], $dimensions['height']));
+        $img->resize(
+            min($conf['images']['thumbnail_width'], $dimensions['width']),
+            min($conf['images']['thumbnail_height'], $dimensions['height'])
+        );
 
         // Store thumbnail
         return $vfs->writeData($vfspath . '/small/', $vfs_name, $img->raw(), true);
@@ -197,8 +204,8 @@ class Folks_Driver {
         if ($new) {
             $new = unserialize($new);
         } else {
-            $new = $this->getUsers(array('sort_by' => 'signup_at',
-                                        'sort_dir' => 0), 0, $limit);
+            $new = $this->getUsers(['sort_by' => 'signup_at',
+                'sort_dir' => 0], 0, $limit);
             if ($new instanceof PEAR_Error) {
                 return $new;
             }
@@ -254,16 +261,16 @@ class Folks_Driver {
         // Update user online status only if needed
         // is not added site wide to a general template file
         // scripts/online.sql
-        if ($GLOBALS['conf']['online']['autoupdate'] &&
-            (!$GLOBALS['session']->exists('folks', 'last_update') ||
-             $GLOBALS['session']->get('folks', 'last_update') + $GLOBALS['conf']['online']['ttl'] < $_SERVER['REQUEST_TIME'])) {
+        if ($GLOBALS['conf']['online']['autoupdate']
+            && (!$GLOBALS['session']->exists('folks', 'last_update')
+             || $GLOBALS['session']->get('folks', 'last_update') + $GLOBALS['conf']['online']['ttl'] < $_SERVER['REQUEST_TIME'])) {
 
             // Update online status
             $this->_updateOnlineStatus();
 
             // Update profile
             if ($GLOBALS['registry']->isAuthenticated()) {
-                $this->_saveProfile(array('last_online_on' => $_SERVER['REQUEST_TIME']), $GLOBALS['registry']->getAuth());
+                $this->_saveProfile(['last_online_on' => $_SERVER['REQUEST_TIME']], $GLOBALS['registry']->getAuth());
             }
         }
 
@@ -304,7 +311,7 @@ class Folks_Driver {
         }
 
         $profile = $GLOBALS['cache']->get('folksProfile' . $user, $GLOBALS['conf']['cache']['default_lifetime']);
-        if ($profile || ($GLOBALS['registry']->isAdmin() && Horde_Util::getGet('debug'))) {
+        if ($profile || ($GLOBALS['registry']->isAdmin() && Util::getGet('debug'))) {
 
             $profile = unserialize($profile);
 
@@ -316,14 +323,14 @@ class Folks_Driver {
             }
 
             // Filter description
-            $filters = array('text2html', 'bbcode', 'highlightquotes', 'emoticons');
-            $filters_params = array(array('parselevel' => Horde_Text_Filter_Text2html::MICRO),
-                                    array(),
-                                    array(),
-                                    array());
+            $filters = ['text2html', 'bbcode', 'highlightquotes', 'emoticons'];
+            $filters_params = [['parselevel' => Horde_Text_Filter_Text2html::MICRO],
+                [],
+                [],
+                []];
 
-            if (($hasBBcode = strpos($profile['user_description'], '[')) !== false &&
-                    strpos($profile['user_description'], '[/', $hasBBcode) !== false) {
+            if (($hasBBcode = strpos($profile['user_description'], '[')) !== false
+                    && strpos($profile['user_description'], '[/', $hasBBcode) !== false) {
                 $filters_params[0]['parselevel'] = Horde_Text_Filter_Text2html::NOHTML;
             }
 
@@ -341,15 +348,27 @@ class Folks_Driver {
                     }
                 } else {
                     try {
-                        $profile['count_' . $service] = Horde::callHook('countService', array($service, $user), 'folks');
-                    } catch (Horde_Exception_HookNotSet $e) {}
+                        /**
+                         * ARCHITECTURE VIOLATION: Using deprecated Horde::callHook()
+                         * @deprecated Use $GLOBALS['injector']->getInstance('Horde_Core_Hooks')->callHook() instead
+                         * @see Horde_Deprecated::callHook()
+                         */
+                        $profile['count_' . $service] = Horde::callHook('countService', [$service, $user], 'folks');
+                    } catch (Horde_Exception_HookNotSet $e) {
+                    }
                     if (empty($profile['count_' . $service])) {
                         continue;
                     }
                 }
                 try {
-                    $profile['count_' . $service . '_list'] = Horde::callHook('getService', array($service, $user), 'folks');
-                } catch (Horde_Exception_HookNotSet $e) {}
+                    /**
+                     * ARCHITECTURE VIOLATION: Using deprecated Horde::callHook()
+                     * @deprecated Use $GLOBALS['injector']->getInstance('Horde_Core_Hooks')->callHook() instead
+                     * @see Horde_Deprecated::callHook()
+                     */
+                    $profile['count_' . $service . '_list'] = Horde::callHook('getService', [$service, $user], 'folks');
+                } catch (Horde_Exception_HookNotSet $e) {
+                }
                 if (empty($profile['count_' . $service . '_list'])) {
                     $profile['count_' . $service] = 0;
                 }
@@ -380,7 +399,7 @@ class Folks_Driver {
 
         $password = hash('md5', $password);
 
-        return $this->_saveProfile(array('user_password' => $password), $user);
+        return $this->_saveProfile(['user_password' => $password], $user);
     }
 
     /**
@@ -407,15 +426,15 @@ class Folks_Driver {
      *
      * @return boolean True, if the view was logged, false if the mesage was aleredy seen
      */
-    function logView($id)
+    public function logView($id)
     {
         if (!$GLOBALS['registry']->isAuthenticated() || Horde_Auth::getAUth() == $id) {
             return false;
         }
 
         /* We already read this user? */
-        if (isset($_COOKIE['folks_viewed_user']) &&
-            strpos($_COOKIE['folks_viewed_user'], $id . ':') !== false) {
+        if (isset($_COOKIE['folks_viewed_user'])
+            && strpos($_COOKIE['folks_viewed_user'], $id . ':') !== false) {
             return false;
         }
 
@@ -426,19 +445,25 @@ class Folks_Driver {
             $_COOKIE['folks_viewed_user'] .= $id . ':';
         }
 
-        setcookie('folks_viewed_user', $_COOKIE['folks_viewed_user'], $_SERVER['REQUEST_TIME'] + 22896000, $GLOBALS['conf']['cookie']['path'],
-                  $GLOBALS['conf']['cookie']['domain'],  $GLOBALS['conf']['use_ssl'] == 1 ? 1 : 0);
+        setcookie(
+            'folks_viewed_user',
+            $_COOKIE['folks_viewed_user'],
+            $_SERVER['REQUEST_TIME'] + 22896000,
+            $GLOBALS['conf']['cookie']['path'],
+            $GLOBALS['conf']['cookie']['domain'],
+            $GLOBALS['conf']['use_ssl'] == 1 ? 1 : 0
+        );
 
         return $this->_logView($id);
     }
 
-   /**
-    * Delete user
-    *
-    * @param string $user    Username
-    *
-    * @return boolean
-    */
+    /**
+     * Delete user
+     *
+     * @param string $user    Username
+     *
+     * @return boolean
+     */
     public function deleteUser($user)
     {
         if (!$GLOBALS['registry']->isAdmin()) {
@@ -454,7 +479,7 @@ class Folks_Driver {
         // Delete groups
         if ($GLOBALS['conf']['friends']) {
             $shares = $GLOBALS['injector']->getInstance('Horde_Core_Factory_Share')->create();
-            $groups = $shares->listShares($GLOBALS['registry']->getAuth(), array('perm' => Horde_Perms::SHOW));
+            $groups = $shares->listShares($GLOBALS['registry']->getAuth(), ['perm' => Horde_Perms::SHOW]);
             foreach ($groups as $share) {
                 $result = $shares->removeShare($share);
                 if ($result instanceof PEAR_Error) {
@@ -465,7 +490,7 @@ class Folks_Driver {
 
         // Delete comments
         if ($registry->hasMethod('forums/deleteForum')) {
-            $registry->call('forums/deleteForum', array('folks', $user));
+            $registry->call('forums/deleteForum', ['folks', $user]);
         }
 
         // Delete user
@@ -503,7 +528,7 @@ class Folks_Driver {
             $GLOBALS['cache']->set('folksUserAttributes' . $user, serialize($attributes));
         }
 
-        return $group ? (isset($attributes[$group]) ? $attributes[$group] : array()) : $attributes;
+        return $group ? ($attributes[$group] ?? []) : $attributes;
     }
 
     /**
@@ -583,12 +608,12 @@ class Folks_Driver {
         return Folks::encodeString($user, $type . $encrypted);
     }
 
-   /**
-    * Save search criteria
-    *
-    * @param string $criteria    Search criteria
-    * @param string $name    Search name
-    */
+    /**
+     * Save search criteria
+     *
+     * @param string $criteria    Search criteria
+     * @param string $name    Search name
+     */
     public function saveSearch($criteria, $name)
     {
         $GLOBALS['cache']->expire('folksearch' . $GLOBALS['registry']->getAuth());
@@ -596,11 +621,11 @@ class Folks_Driver {
         return $this->_saveSearch($criteria, $name);
     }
 
-   /**
-    * Get saved search
-    *
-    * @return array saved searches
-    */
+    /**
+     * Get saved search
+     *
+     * @return array saved searches
+     */
     public function getSavedSearch()
     {
         $search = $GLOBALS['cache']->get('folksearch' . $GLOBALS['registry']->getAuth(), $GLOBALS['conf']['cache']['default_lifetime']);
@@ -618,13 +643,13 @@ class Folks_Driver {
         return $search;
     }
 
-   /**
-    * Get saved search criteria
-    *
-    * @param string $name    Username
-    *
-    * @return array  search criteria
-    */
+    /**
+     * Get saved search criteria
+     *
+     * @param string $name    Username
+     *
+     * @return array  search criteria
+     */
     public function getSearchCriteria($name)
     {
         $criteria = $this->_getSearchCriteria($name);
@@ -635,11 +660,11 @@ class Folks_Driver {
         return unserialize($criteria);
     }
 
-   /**
-    * Delete saved search
-    *
-    * @param string $name    Username
-    */
+    /**
+     * Delete saved search
+     *
+     * @param string $name    Username
+     */
     public function deleteSavedSearch($name)
     {
         $GLOBALS['cache']->expire('folksearch' . $GLOBALS['registry']->getAuth());
@@ -647,15 +672,15 @@ class Folks_Driver {
         return $this->_deleteSavedSearch($name);
     }
 
-   /**
-    * Log users activity
-    *
-    * @param string $message    Activity message
-    * @param string $scope    Scope
-    * @param string $user    $user
-    *
-    * @return true on success
-    */
+    /**
+     * Log users activity
+     *
+     * @param string $message    Activity message
+     * @param string $scope    Scope
+     * @param string $user    $user
+     *
+     * @return true on success
+     */
     public function logActivity($message, $scope = 'folks', $user = null)
     {
         if ($user == null) {
@@ -670,7 +695,7 @@ class Folks_Driver {
         if ($scope == 'folks:comments' && !$GLOBALS['prefs']->getValue('log_user_comments')) {
             return true;
 
-        // Don't log account changes
+            // Don't log account changes
         } elseif ($scope == 'folks' && !$GLOBALS['prefs']->getValue('log_account_changes')) {
             return true;
         }
@@ -692,14 +717,14 @@ class Folks_Driver {
         return $this->_logActivity($message, $scope, $user);
     }
 
-   /**
-    * Get user's activity
-    *
-    * @param string $user    Username
-    * @param int $limit    Number of actions to return
-    *
-    * @return array    Activity log
-    */
+    /**
+     * Get user's activity
+     *
+     * @param string $user    Username
+     * @param int $limit    Number of actions to return
+     *
+     * @return array    Activity log
+     */
     public function getActivity($user, $limit = 10)
     {
         $activity = $GLOBALS['cache']->get($user . '_activity', $GLOBALS['conf']['cache']['default_lifetime']);
@@ -717,14 +742,14 @@ class Folks_Driver {
         return $activity;
     }
 
-   /**
-    * Delete users activity
-    *
-    * @param string $scope    Scope
-    * @param integer $date    Date
-    *
-    * @return true on success
-    */
+    /**
+     * Delete users activity
+     *
+     * @param string $scope    Scope
+     * @param integer $date    Date
+     *
+     * @return true on success
+     */
     public function deleteActivity($scope, $date)
     {
         $user = $GLOBALS['registry']->getAuth();

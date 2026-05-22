@@ -1,8 +1,9 @@
 <?php
+
 /**
  * Folks facebook firends implementation
  *
- * Copyright 2007-2017 Horde LLC (http://www.horde.org/)
+ * Copyright 2007-2026 Horde LLC (http://www.horde.org/)
  *
  * See the enclosed file LICENSE for license information (GPL). If you
  * did not receive this file, see http://www.horde.org/licenses/gpl.
@@ -10,8 +11,8 @@
  * @author  Duck <duck@obala.net>
  * @package Folks
  */
-class Folks_Friends_facebook extends Folks_Friends {
-
+class Folks_Friends_facebook extends Folks_Friends
+{
     /**
      * FB connection parameters
      */

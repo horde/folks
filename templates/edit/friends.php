@@ -36,7 +36,7 @@ if (empty($list)) {
         foreach ($actions as $action) {
             echo '<td>';
             echo '<a href="' . $action['url']->add($action['id'], $user) . '">'
-                            . $action['img']  . ' ' . $action['name'] . '</a>';
+                            . $action['img'] . ' ' . $action['name'] . '</a>';
             echo '</td>';
         }
     ?>

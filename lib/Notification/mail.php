@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Folks Notification Class.
  *
@@ -10,8 +11,8 @@
  * @author  Duck <duck@obala.net>
  * @package Folks
  */
-class Folks_Notification_mail extends Folks_Notification {
-
+class Folks_Notification_mail extends Folks_Notification
+{
     /**
      * Returns method human name
      */
@@ -46,19 +47,19 @@ class Folks_Notification_mail extends Folks_Notification {
      *
      * @return true on succes, PEAR_Error on failure
      */
-    public function notify($user, $subject, $body, $attachments = array())
+    public function notify($user, $subject, $body, $attachments = [])
     {
         if (empty($user)) {
             return true;
         }
 
-        $mail = new Horde_Mime_Mail(array(
+        $mail = new Horde_Mime_Mail([
             'body' => $body,
             'Subject' => $subject,
             'From' => $this->_params['from_addr'],
             'User-Agent' => 'Folks ' . $GLOBALS['registry']->getVersion(),
             'X-Originating-IP' => $_SERVER['REMOTE_ADDR'],
-            'X-Remote-Browser' => $_SERVER['HTTP_USER_AGENT']));
+            'X-Remote-Browser' => $_SERVER['HTTP_USER_AGENT']]);
 
         foreach ($attachments as $file) {
             if (file_exists($file)) {
@@ -67,7 +68,7 @@ class Folks_Notification_mail extends Folks_Notification {
         }
 
         if (is_string($user)) {
-            $user = array($user);
+            $user = [$user];
         }
 
         foreach ($user as $recipent) {
@@ -92,7 +93,7 @@ class Folks_Notification_mail extends Folks_Notification {
      *
      * @return true on succes, PEAR_Error on failure
      */
-    public function notifyFriends($user, $subject, $body, $attachments = array())
+    public function notifyFriends($user, $subject, $body, $attachments = [])
     {
         $friends = $GLOBALS['registry']->call('users/getFriends');
         return $this->notify($friends, $subject, $body, $attachments);

@@ -1,4 +1,7 @@
 <?php
+
+use Horde\Util\Util;
+
 /**
  * Copyright Obala d.o.o. (www.obala.si)
  *
@@ -20,31 +23,31 @@ if ($profile instanceof PEAR_Error) {
     Folks::getUrlFor('list', 'list')->redirect();
 }
 
-$comments = array(
+$comments = [
     'never' => _("No one"),
     'all' => _("Any one"),
     'authenticated' => _("Authenticated users"),
-    'moderate' => _("Moderate comments - I will approve every single comment")
-);
+    'moderate' => _("Moderate comments - I will approve every single comment"),
+];
 
 if ($conf['comments']['allow'] == 'authenticated') {
     unset($comments['all']);
 }
 
 $form = new Horde_Form($vars, $title, 'comments');
-$v = $form->addVariable(_("Who can post comments to your profile"), 'user_comments', 'radio', false, false, null, array($comments));
+$v = $form->addVariable(_("Who can post comments to your profile"), 'user_comments', 'radio', false, false, null, [$comments]);
 $v->setDefault('authenticated');
-$form->setButtons(array(_("Save"), _("Delete all current comments")));
+$form->setButtons([_("Save"), _("Delete all current comments")]);
 
 if (!$form->isSubmitted()) {
     $vars->set('user_comments', $profile['user_comments']);
 
 } elseif ($form->validate()) {
 
-    if (Horde_Util::getFormData('submitbutton') == _("Delete all current comments")) {
+    if (Util::getFormData('submitbutton') == _("Delete all current comments")) {
 
         try {
-            $registry->call('forums/deleteForum', array('folks', $GLOBALS['registry']->getAuth()));
+            $registry->call('forums/deleteForum', ['folks', $GLOBALS['registry']->getAuth()]);
             $result = $folks_driver->updateComments($GLOBALS['registry']->getAuth(), true);
             if ($result instanceof PEAR_Error) {
                 $notification->push($result);
@@ -57,21 +60,21 @@ if (!$form->isSubmitted()) {
     } else {
 
         // Update forum status
-        if ($vars->get('user_comments') == 'moderate' && $profile['user_comments'] != 'moderate' ||
-            $vars->get('user_comments') != 'moderate' && $profile['user_comments'] == 'moderate') {
+        if ($vars->get('user_comments') == 'moderate' && $profile['user_comments'] != 'moderate'
+            || $vars->get('user_comments') != 'moderate' && $profile['user_comments'] == 'moderate') {
 
-            $info = array('author' => $GLOBALS['registry']->getAuth(),
-                            'forum_name' => $GLOBALS['registry']->getAuth(),
-                            'forum_moderated' => ($profile['user_comments'] == 'moderate'));
+            $info = ['author' => $GLOBALS['registry']->getAuth(),
+                'forum_name' => $GLOBALS['registry']->getAuth(),
+                'forum_moderated' => ($profile['user_comments'] == 'moderate')];
             try {
-                $registry->call('forums/saveFrom', array('folks', '', $info));
+                $registry->call('forums/saveFrom', ['folks', '', $info]);
             } catch (Horde_Exception $e) {
                 $notification->push($e);
             }
         }
 
         // Update profile
-        $result = $folks_driver->saveProfile(array('user_comments' => $vars->get('user_comments')));
+        $result = $folks_driver->saveProfile(['user_comments' => $vars->get('user_comments')]);
         if ($result instanceof PEAR_Error) {
             $notification->push($result);
         } else {
@@ -81,9 +84,9 @@ if (!$form->isSubmitted()) {
 }
 
 $page_output->addScriptFile('tables.js', 'horde');
-$page_output->header(array(
-    'title' => $title
-));
+$page_output->header([
+    'title' => $title,
+]);
 require FOLKS_TEMPLATES . '/menu.inc';
 
 echo $tabs->render('comments');
@@ -92,7 +95,7 @@ $form->renderActive(null, null, null, 'post');
 if ($profile['user_comments'] == 'moderate') {
     echo '<br />';
     try {
-        echo $registry->call('forums/moderateForm', array('folks'));
+        echo $registry->call('forums/moderateForm', ['folks']);
     } catch (Horde_Exception $e) {
         echo $e->getMessage();
     }

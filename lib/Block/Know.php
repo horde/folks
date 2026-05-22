@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @author  Duck <duck@obala.net>
  * @package Folks
@@ -7,7 +8,7 @@ class Folks_Block_Know extends Horde_Core_Block
 {
     /**
      */
-    public function __construct($app, $params = array())
+    public function __construct($app, $params = [])
     {
         parent::__construct($app, $params);
 
@@ -27,17 +28,17 @@ class Folks_Block_Know extends Horde_Core_Block
         }
 
         // Prepare actions
-        $actions = array(
-            array('url' => Horde::url('edit/friends/add.php'),
+        $actions = [
+            ['url' => Horde::url('edit/friends/add.php'),
                 'id' => 'user',
-                'name' => _("Add friend")),
-            array('url' => Horde::url('user.php'),
+                'name' => _("Add friend")],
+            ['url' => Horde::url('user.php'),
                 'id' => 'user',
-                'name' => _("View profile")));
+                'name' => _("View profile")]];
         if ($GLOBALS['registry']->hasInterface('letter')) {
-            $actions[] = array('url' => $GLOBALS['registry']->callByPackage('letter', 'compose', ''),
-                                'id' => 'user_to',
-                                'name' => _("Send message"));
+            $actions[] = ['url' => $GLOBALS['registry']->callByPackage('letter', 'compose', ''),
+                'id' => 'user_to',
+                'name' => _("Send message")];
         }
 
         $GLOBALS['page_output']->addScriptFile('stripe.js', 'horde');

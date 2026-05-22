@@ -1,6 +1,9 @@
 <?php
+
+use Horde\Util\Util;
+
 /**
- * Copyright 2008-2017 Horde LLC (http://www.horde.org/)
+ * Copyright 2008-2026 Horde LLC (http://www.horde.org/)
  *
  * See the enclosed file LICENSE for license information (GPL). If you
  * did not receive this file, see http://www.horde.org/licenses/gpl.
@@ -8,35 +11,58 @@
  * @author Duck <duck@obala.net>
  * @package Folks
  */
-class Folks_Login_Form extends Horde_Form {
-
-    function __construct($vars, $title = '', $name = null)
+class Folks_Login_Form extends Horde_Form
+{
+    public function __construct($vars, $title = '', $name = null)
     {
         parent::__construct($vars, $title, $name);
 
-        $this->addHidden('', 'url', 'text', Horde_Util::getFormData('url', '/'));
+        $this->addHidden('', 'url', 'text', Util::getFormData('url', '/'));
         $this->setButtons(_("Login"));
 
-        $this->addVariable(_("Username"), 'username', 'text', true, false,
-                                sprintf(_("Enter the username you registered to %s"),
-                                $GLOBALS['registry']->get('name', 'horde')), array('', 30, 26));
+        $this->addVariable(
+            _("Username"),
+            'username',
+            'text',
+            true,
+            false,
+            sprintf(
+                _("Enter the username you registered to %s"),
+                $GLOBALS['registry']->get('name', 'horde')
+            ),
+            ['', 30, 26]
+        );
 
         $this->addVariable(_("Password"), 'password', 'password', true, false, _("Enter your password. Please be aware that password is case sensitive."));
 
-        $v = $this->addVariable(_("Remember login?"), 'loginfor', 'radio', true, false, null,
-                                                        array(array('0' => _("No, only for this view"),
-                                                                    '1' => _("Yes, remember me so the next time I don't neet to login"))));
+        $v = $this->addVariable(
+            _("Remember login?"),
+            'loginfor',
+            'radio',
+            true,
+            false,
+            null,
+            [['0' => _("No, only for this view"),
+                '1' => _("Yes, remember me so the next time I don't neet to login")]]
+        );
         $v->setDefault('0');
 
         $username = $vars->get('username');
         if ($GLOBALS['conf']['login']['tries']
             && !empty($username)) {
-            $tries = (int)$GLOBALS['cache']->get('login_tries_' . $username, 0);
+            $tries = (int) $GLOBALS['cache']->get('login_tries_' . $username, 0);
             $GLOBALS['cache']->set('login_tries_' . $username, $tries + 1);
             if ($tries >= $GLOBALS['conf']['login']['tries']) {
-                    $desc = _("Please enter the text above");
-                    $this->addVariable('Preverjanje:', 'captcha', 'captcha', true, false, $desc,
-                                        array($this->_getCAPTCHA(!$this->isSubmitted()), HORDE_BASE . '/config/couri.ttf'));
+                $desc = _("Please enter the text above");
+                $this->addVariable(
+                    'Preverjanje:',
+                    'captcha',
+                    'captcha',
+                    true,
+                    false,
+                    $desc,
+                    [$this->_getCAPTCHA(!$this->isSubmitted()), HORDE_BASE . '/config/couri.ttf']
+                );
             }
         }
     }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright Obala d.o.o. (www.obala.si)
  *
@@ -20,9 +21,9 @@ foreach ($registry->listApps() as $app) {
 }
 asort($apps);
 
-$page_output->header(array(
-    'title' => $title
-));
-$notification->notify(array('listeners' => 'status'));
+$page_output->header([
+    'title' => $title,
+]);
+$notification->notify(['listeners' => 'status']);
 require FOLKS_TEMPLATES . '/services/services.php';
 $page_output->footer();

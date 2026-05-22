@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright Obala d.o.o. (www.obala.si)
  *
@@ -38,11 +39,11 @@ $friends = Folks_Friends::singleton();
 $friend_list = $friends->getFriends();
 if ($friend_list instanceof PEAR_Error) {
     $notification->push($friend_list);
-    $friend_list = array();
+    $friend_list = [];
 }
 
 // Get friends activities
-$firendActivities = array();
+$firendActivities = [];
 foreach ($friend_list as $user) {
     $activities = $folks_driver->getActivity($user);
     if ($activities instanceof PEAR_Error) {
@@ -63,9 +64,9 @@ if ($activities instanceof PEAR_Error) {
 }
 
 $page_output->addScriptFile('stripe.js', 'horde');
-$page_output->header(array(
-    'title' => $title
-));
-$notification->notify(array('listeners' => 'status'));
+$page_output->header([
+    'title' => $title,
+]);
+$notification->notify(['listeners' => 'status']);
 require FOLKS_TEMPLATES . '/friends/friends.php';
 $page_output->footer();

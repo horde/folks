@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright Obala d.o.o. (www.obala.si)
  *
@@ -13,9 +14,9 @@ $folks_authentication = 'none';
 require_once __DIR__ . '/../lib/base.php';
 
 $auth = $injector->getInstance('Horde_Core_Factory_Auth')->create();
-if (!$GLOBALS['registry']->getAuth() &&
-    (!isset($_SERVER['PHP_AUTH_USER']) ||
-     !$auth->authenticate($_SERVER['PHP_AUTH_USER'], array('password' => isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : null)))) {
+if (!$GLOBALS['registry']->getAuth()
+    && (!isset($_SERVER['PHP_AUTH_USER'])
+     || !$auth->authenticate($_SERVER['PHP_AUTH_USER'], ['password' => $_SERVER['PHP_AUTH_PW'] ?? null]))) {
     header('WWW-Authenticate: Basic realm="Letter RSS Interface"');
     header('HTTP/1.0 401 Unauthorized');
     echo '401 Unauthorized';
@@ -29,20 +30,20 @@ $friends_driver = Folks_Friends::singleton();
 $my_list = $friends_driver->getFriends();
 if ($my_list instanceof PEAR_Error) {
     $notification->push($my_list);
-    $my_list = array();
+    $my_list = [];
 }
 
 // Get all friends of frends and make a top list of common users
-$users = array();
+$users = [];
 foreach ($my_list as $friend) {
-    $friends = Folks_Friends::singleton(null, array('user' => $friend));
+    $friends = Folks_Friends::singleton(null, ['user' => $friend]);
     $friend_friends = $friends->getFriends();
     if ($friend_friends instanceof PEAR_Error) {
         continue;
     }
     foreach ($friend_friends as $friend_friend) {
-        if ($friend_friend == $GLOBALS['registry']->getAuth() ||
-            in_array($friend_friend, $my_list)) {
+        if ($friend_friend == $GLOBALS['registry']->getAuth()
+            || in_array($friend_friend, $my_list)) {
             continue;
         } elseif (isset($users[$friend_friend])) {
             $users[$friend_friend] += 1;

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Folks internal firends implementaton
  *
@@ -16,7 +17,7 @@
  *      'type' => 'implicit'
  *  );
  *
- * Copyright 2007-2017 Horde LLC (http://www.horde.org/)
+ * Copyright 2007-2026 Horde LLC (http://www.horde.org/)
  *
  * See the enclosed file LICENSE for license information (GPL). If you
  * did not receive this file, see http://www.horde.org/licenses/gpl.
@@ -24,8 +25,8 @@
  * @author  Duck <duck@obala.net>
  * @package Folks
  */
-class Folks_Friends_prefs extends Folks_Friends {
-
+class Folks_Friends_prefs extends Folks_Friends
+{
     /**
      * Add user to a friend list
      *
@@ -102,24 +103,24 @@ class Folks_Friends_prefs extends Folks_Friends {
             $user = $GLOBALS['registry']->getAuth();
         }
 
-        $u_prefs = $GLOBALS['injector']->getInstance('Horde_Prefs')->getPrefs($GLOBALS['registry']->getApp(), array(
-            'user' => $user
-        ));
+        $u_prefs = $GLOBALS['injector']->getInstance('Horde_Prefs')->getPrefs($GLOBALS['registry']->getApp(), [
+            'user' => $user,
+        ]);
 
         $list = $u_prefs->getValue($type);
 
         if ($list) {
             $users = preg_split("/[\s,]+/", $list, -1, PREG_SPLIT_NO_EMPTY);
             if (sizeof($users) > 0) {
-                $list = array();
+                $list = [];
                 foreach ($users as $value) {
-                   $list[$value] = $value;
+                    $list[$value] = $value;
                 }
                 return $list;
             }
         }
 
-        return array();
+        return [];
     }
 
     /**
@@ -158,6 +159,6 @@ class Folks_Friends_prefs extends Folks_Friends {
      */
     public function getGroups()
     {
-        return array('whitelist' => _("Friends"));
+        return ['whitelist' => _("Friends")];
     }
 }

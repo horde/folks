@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Folks application API.
  *
@@ -11,15 +12,15 @@ class Folks_Application extends Horde_Registry_Application
 {
     /**
      */
-    public $auth = array(
+    public $auth = [
         'add',
         'authenticate',
         'exists',
         'list',
         'remove',
         'resetpassword',
-        'transparent'
-    );
+        'transparent',
+    ];
 
     /**
      */
@@ -29,7 +30,7 @@ class Folks_Application extends Horde_Registry_Application
      */
     protected function _init()
     {
-        $links = array(Folks::getUrlFor('feed', 'online', true, -1) => _("Online users"));
+        $links = [Folks::getUrlFor('feed', 'online', true, -1) => _("Online users")];
         if ($GLOBALS['registry']->isAuthenticated()) {
             $links[Folks::getUrlFor('feed', 'friends', true, -1)] = _("Online friends");
             $links[Folks::getUrlFor('feed', 'activity', true, -1)] = _("Friends activity");
@@ -37,10 +38,10 @@ class Folks_Application extends Horde_Registry_Application
         }
 
         foreach ($links as $url => $label) {
-            $GLOBALS['page_output']->addLinkTag(array(
+            $GLOBALS['page_output']->addLinkTag([
                 'href' => $url,
-                'title' => $label
-            ));
+                'title' => $label,
+            ]);
         }
     }
 
@@ -73,8 +74,8 @@ class Folks_Application extends Horde_Registry_Application
      */
     public function authTransparent($auth_ob)
     {
-        if (empty($_COOKIE['folks_login_code']) ||
-            empty($_COOKIE['folks_login_user'])) {
+        if (empty($_COOKIE['folks_login_code'])
+            || empty($_COOKIE['folks_login_user'])) {
             return false;
         }
 
@@ -85,7 +86,7 @@ class Folks_Application extends Horde_Registry_Application
             $auth_ob->setCredential('userId', $_COOKIE['folks_login_user']);
             $GLOBALS['folks_driver']->resetOnlineUsers();
             return true;
-        }  else {
+        } else {
             return false;
         }
     }
@@ -105,7 +106,7 @@ class Folks_Application extends Horde_Registry_Application
     {
         require_once __DIR__ . '/base.php';
 
-        $users = array();
+        $users = [];
         foreach ($GLOBALS['folks_driver']->getUsers() as $user) {
             $users[] = $user['user_uid'];
         }

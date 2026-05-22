@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @author  Duck <duck@obala.net>
  * @package Folks
@@ -7,7 +8,7 @@ class Folks_Block_Friends extends Horde_Core_Block
 {
     /**
      */
-    public function __construct($app, $params = array())
+    public function __construct($app, $params = [])
     {
         parent::__construct($app, $params);
 
@@ -18,18 +19,18 @@ class Folks_Block_Friends extends Horde_Core_Block
      */
     protected function _params()
     {
-        return array(
-            'display' => array(
+        return [
+            'display' => [
                 'name' => _("Show friends that are"),
                 'type' => 'enum',
                 'default' => 'online',
-                'values' => array(
+                'values' => [
                     'all' => _("All"),
                     'online' => _("Online"),
-                    'offline' => _("Offline")
-                )
-            )
-        );
+                    'offline' => _("Offline"),
+                ],
+            ],
+        ];
     }
 
     /**
@@ -52,7 +53,7 @@ class Folks_Block_Friends extends Horde_Core_Block
         if (empty($this->_params['display']) || $this->_params['display'] == 'all') {
             $list = $friends;
         } else {
-            $list = array();
+            $list = [];
             foreach ($friends as $friend) {
                 if ($this->_params['display'] == 'online') {
                     if (array_key_exists($friend, $users)) {
@@ -67,14 +68,14 @@ class Folks_Block_Friends extends Horde_Core_Block
         }
 
         // Prepare actions
-        $actions = array(
-            array('url' => Horde::url('user.php'),
+        $actions = [
+            ['url' => Horde::url('user.php'),
                 'id' => 'user',
-                'name' => _("View profile")));
+                'name' => _("View profile")]];
         if ($GLOBALS['registry']->hasInterface('letter')) {
-            $actions[] = array('url' => $GLOBALS['registry']->callByPackage('letter', 'compose', ''),
-                                'id' => 'user_to',
-                                'name' => _("Send message"));
+            $actions[] = ['url' => $GLOBALS['registry']->callByPackage('letter', 'compose', ''),
+                'id' => 'user_to',
+                'name' => _("Send message")];
         }
 
         $GLOBALS['page_output']->addScriptFile('stripe.js', 'horde');

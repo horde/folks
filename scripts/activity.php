@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Script calculate user acrivity. Please modify it for your needs.
  *
@@ -15,7 +16,7 @@
 exit;
 
 require_once __DIR__ . '/../lib/Application.php';
-Horde_Registry::appInit('folks', array('cli' => true));
+Horde_Registry::appInit('folks', ['cli' => true]);
 
 try {
     $db = $injector->getInstance('Horde_Core_Factory_DbPear')->create();
@@ -23,25 +24,25 @@ try {
     $cli->fatal($e);
 }
 
-$users = array();
+$users = [];
 $total = 0; // total points
 $totalnum = 0; // total messages
 
 // Count user activiy in various app
-$apps = array(
-'letter' => array('query' => 'SELECT COUNT(*), user_from FROM letter_inbox WHERE letter_inbox.id >= ' . strtotime('-3 month') * 100000000 . ' GROUP BY letter_inbox.user_from',
-                  'modify' => 0.3),
-'agora' => array('query' => 'SELECT COUNT(*), msg.message_author FROM agora_forums AS idx, agora_messages AS msg WHERE idx.forum_id = msg.forum_id AND msg.message_timestamp >= UNIX_TIMESTAMP(NOW() - INTERVAL 1 MONTH) GROUP BY message_author ORDER BY counter DESC',
-                  'modify' => 2),
-'news' => array('query' => 'SELECT COUNT(*), news.user FROM news WHERE news.publish >= (NOW() - INTERVAL 3 MONTH) AND news.status = 1 GROUP BY news.user',
-                  'modify' => 18),
-'thomas' => array('query' => 'SELECT COUNT(*), thomas_blogs.user_uid FROM thomas_blogs WHERE thomas_blogs.created >= (NOW() - INTERVAL 3 MONTH) AND thomas_blogs.status = 1 GROUP BY thomas_blogs.user_uid',
-                  'modify' => 10),
-'classifieds' => array('query' => 'SELECT COUNT(*), classified_ads.user_uid FROM classified_ads WHERE classified_ads.ad_validto <= UNIX_TIMESTAMP() GROUP BY classified_ads.user_uid',
-                  'modify' => 5),
-'ansel' => array('query' => 'SELECT COUNT(*) AS counter, ansel_shares.share_owner FROM ansel_shares WHERE ansel_shares.attribute_date_created >= UNIX_TIMESTAMP(NOW() - INTERVAL 3 MONTH) GROUP BY ansel_shares.share_owner ORDER BY counter DESC',
-                  'modify' => 5),
-);
+$apps = [
+    'letter' => ['query' => 'SELECT COUNT(*), user_from FROM letter_inbox WHERE letter_inbox.id >= ' . strtotime('-3 month') * 100000000 . ' GROUP BY letter_inbox.user_from',
+        'modify' => 0.3],
+    'agora' => ['query' => 'SELECT COUNT(*), msg.message_author FROM agora_forums AS idx, agora_messages AS msg WHERE idx.forum_id = msg.forum_id AND msg.message_timestamp >= UNIX_TIMESTAMP(NOW() - INTERVAL 1 MONTH) GROUP BY message_author ORDER BY counter DESC',
+        'modify' => 2],
+    'news' => ['query' => 'SELECT COUNT(*), news.user FROM news WHERE news.publish >= (NOW() - INTERVAL 3 MONTH) AND news.status = 1 GROUP BY news.user',
+        'modify' => 18],
+    'thomas' => ['query' => 'SELECT COUNT(*), thomas_blogs.user_uid FROM thomas_blogs WHERE thomas_blogs.created >= (NOW() - INTERVAL 3 MONTH) AND thomas_blogs.status = 1 GROUP BY thomas_blogs.user_uid',
+        'modify' => 10],
+    'classifieds' => ['query' => 'SELECT COUNT(*), classified_ads.user_uid FROM classified_ads WHERE classified_ads.ad_validto <= UNIX_TIMESTAMP() GROUP BY classified_ads.user_uid',
+        'modify' => 5],
+    'ansel' => ['query' => 'SELECT COUNT(*) AS counter, ansel_shares.share_owner FROM ansel_shares WHERE ansel_shares.attribute_date_created >= UNIX_TIMESTAMP(NOW() - INTERVAL 3 MONTH) GROUP BY ansel_shares.share_owner ORDER BY counter DESC',
+        'modify' => 5],
+];
 
 // Get application activities
 foreach ($apps as $app) {
@@ -63,18 +64,18 @@ foreach ($apps as $app) {
 }
 
 // Get comments activires
-$comments = array('news' => 5,
-                'thomas' => 2,
-                'schedul' => 2,
-                'oscar' => 1,
-                'ansel' => 1,
-                'folks' => 1,
-                'genie' => 1);
+$comments = ['news' => 5,
+    'thomas' => 2,
+    'schedul' => 2,
+    'oscar' => 1,
+    'ansel' => 1,
+    'folks' => 1,
+    'genie' => 1];
 
 foreach ($comments as $comment_app => $comment_factor) {
 
     $sql = 'SELECT COUNT(*), msg.message_author '
-            . ' FROM agora_forums_' . $comment_app. ' AS idx, agora_messages_' . $comment_app. ' AS msg  '
+            . ' FROM agora_forums_' . $comment_app . ' AS idx, agora_messages_' . $comment_app . ' AS msg  '
             . ' WHERE idx.forum_id = msg.forum_id  '
             . ' AND msg.message_timestamp >= UNIX_TIMESTAMP(NOW() - INTERVAL 1 MONTH)  '
             . ' GROUP BY message_author  '
@@ -99,9 +100,9 @@ foreach ($comments as $comment_app => $comment_factor) {
 // find max user activity
 reset($users);
 $maxp = 0;
-foreach ($users as $k => $v){
+foreach ($users as $k => $v) {
     if (!empty($u) && !empty($v)) {
-        if ($v>$maxp) {
+        if ($v > $maxp) {
             $maxp = $v;
         }
     }
@@ -114,14 +115,14 @@ if ($result instanceof PEAR_Error) {
 }
 
 reset($users);
-foreach ($users as $u => $v){
+foreach ($users as $u => $v) {
     if (empty($u) && empty($v)) {
         continue;
     }
 
     $p = ceil($v / $maxp * 100);
 
-    $result = $db->query('UPDATE folks_users SET activity = ? WHERE user_uid = ?' , array($u, $p));
+    $result = $db->query('UPDATE folks_users SET activity = ? WHERE user_uid = ?', [$u, $p]);
     if ($result instanceof PEAR_Error) {
         $cli->fatal($result);
     }

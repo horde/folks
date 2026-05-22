@@ -1,4 +1,5 @@
 <?php
+
 /**
  * See horde/config/prefs.php for documentation on the structure of this file.
  *
@@ -9,88 +10,88 @@
  * use var/config/folks/prefs-servername.php.
  */
 
-$prefGroups['Preview'] = array(
+$prefGroups['Preview'] = [
     'column' => _("Preview"),
     'label' => _("How to preview users"),
     'desc' => _("Set users preview paramaters"),
-    'members' => array('sort_by', 'sort_dir', 'per_page')
-);
+    'members' => ['sort_by', 'sort_dir', 'per_page'],
+];
 
-$prefGroups['Settings'] = array(
+$prefGroups['Settings'] = [
     'column' => _("Settings"),
     'label' => _("Modify account preferences"),
     'desc' => _("Set account action details"),
-    'members' => array('login_notify', 'friends_approval')
-);
+    'members' => ['login_notify', 'friends_approval'],
+];
 
-$prefGroups['Activities'] = array(
+$prefGroups['Activities'] = [
     'column' => _("Settings"),
     'label' => _("Activity log"),
     'desc' => _("Set activity preferences"),
-    'members' => array('log_user_comments', 'log_account_changes', 'log_scopes', 'log_scope_comments')
-);
+    'members' => ['log_user_comments', 'log_account_changes', 'log_scopes', 'log_scope_comments'],
+];
 
-$_prefs['sort_by'] = array(
+$_prefs['sort_by'] = [
     'value' => 'user_uid',
     'locked' => false,
     'type' => 'enum',
-    'enum' => array('user_uid' => _("Username")),
-    'desc' => _("Sort by")
-);
+    'enum' => ['user_uid' => _("Username")],
+    'desc' => _("Sort by"),
+];
 
-$_prefs['sort_dir'] = array(
+$_prefs['sort_dir'] = [
     'value' => 1,
     'locked' => false,
     'type' => 'enum',
-    'enum' => array(0 => _("Descesending"),
-                    1 => _("Ascesending")),
-    'desc' => _("Sort by")
-);
+    'enum' => [0 => _("Descesending"),
+        1 => _("Ascesending")],
+    'desc' => _("Sort by"),
+];
 
-$_prefs['per_page'] = array(
+$_prefs['per_page'] = [
     'value' => 20,
     'locked' => false,
     'type' => 'number',
-    'desc' => _("Number of users perpage")
-);
+    'desc' => _("Number of users perpage"),
+];
 
-$_prefs['login_notify'] = array(
+$_prefs['login_notify'] = [
     'value' => 1,
     'locked' => false,
     'type' => 'enum',
-    'enum' => array(0 => _("No"),
-                    1 => _("Yes")),
-    'desc' => _("Notify friends that I loged in")
-);
+    'enum' => [0 => _("No"),
+        1 => _("Yes")],
+    'desc' => _("Notify friends that I loged in"),
+];
 
-$_prefs['friends_approval'] = array(
+$_prefs['friends_approval'] = [
     'value' => 1,
     'locked' => false,
     'type' => 'enum',
-    'enum' => array(0 => _("No"),
-                    1 => _("Yes")),
-    'desc' => _("Require my confirmation if someone would like to add me to his freidn list.")
-);
+    'enum' => [0 => _("No"),
+        1 => _("Yes")],
+    'desc' => _("Require my confirmation if someone would like to add me to his freidn list."),
+];
 
-$_prefs['log_user_comments'] = array(
+$_prefs['log_user_comments'] = [
     'value' => 1,
     'locked' => false,
     'type' => 'enum',
-    'enum' => array(0 => _("No"),
-                    1 => _("Yes")),
-    'desc' => _("Log when we comment a user?")
-);
+    'enum' => [0 => _("No"),
+        1 => _("Yes")],
+    'desc' => _("Log when we comment a user?"),
+];
 
-$_prefs['log_account_changes'] = array(
+$_prefs['log_account_changes'] = [
     'value' => 1,
     'locked' => false,
     'type' => 'enum',
-    'enum' => array(0 => _("No"),
-                    1 => _("Yes")),
-    'desc' => _("Log account changes?")
-);
+    'enum' => [0 => _("No"),
+        1 => _("Yes")],
+    'desc' => _("Log account changes?"),
+];
 
-$apps = array();
+$apps = [];
 /*
 foreach ($GLOBALS['registry']->listApps() as $app) {
     $apps[$app] = $GLOBALS['registry']->get('name', $app);
@@ -98,13 +99,13 @@ foreach ($GLOBALS['registry']->listApps() as $app) {
 asort($apps);
 */
 
-$_prefs['log_scopes'] = array(
+$_prefs['log_scopes'] = [
     'value' => 'a:0:{}',
     'locked' => false,
     'type' => 'multienum',
     'enum' => $apps,
-    'desc' => _("Application you would like NOT to log your activitiy when you post a new PUBLIC CONTENT.")
-);
+    'desc' => _("Application you would like NOT to log your activitiy when you post a new PUBLIC CONTENT."),
+];
 
 foreach ($apps as $app) {
     if (!$GLOBALS['registry']->hasMethod('commentCallback', $app)) {
@@ -112,10 +113,10 @@ foreach ($apps as $app) {
     }
 }
 
-$_prefs['log_scope_comments'] = array(
+$_prefs['log_scope_comments'] = [
     'value' => 'a:0:{}',
     'locked' => false,
     'type' => 'multienum',
     'enum' => $apps,
-    'desc' => _("Application you would like NOT to log activitiy when you post a new PUBLIC COMMENT")
-);
+    'desc' => _("Application you would like NOT to log activitiy when you post a new PUBLIC COMMENT"),
+];

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Display last comments on users videos.
  */
@@ -6,7 +7,7 @@ class Folks_Block_MyComments extends Horde_Core_Block
 {
     /**
      */
-    public function __construct($app, $params = array())
+    public function __construct($app, $params = [])
     {
         parent::__construct($app, $params);
 
@@ -17,13 +18,13 @@ class Folks_Block_MyComments extends Horde_Core_Block
      */
     protected function _params()
     {
-        return array(
-            'limit' => array(
+        return [
+            'limit' => [
                 'name' => _("Number of comments to display"),
                 'type' => 'int',
-                'default' => 10
-            )
-        );
+                'default' => 10,
+            ],
+        ];
     }
 
     /**
@@ -48,9 +49,11 @@ class Folks_Block_MyComments extends Horde_Core_Block
               . '<th>' . _("User") . '</th></tr></thead>';
 
         try {
-            $threads = $GLOBALS['registry']->call('forums/getThreadsByForumOwner',
-                                                  array($GLOBALS['registry']->getAuth(), 'message_timestamp', 1, false,
-                                                  'folks', 0, $this->_params['limit']));
+            $threads = $GLOBALS['registry']->call(
+                'forums/getThreadsByForumOwner',
+                [$GLOBALS['registry']->getAuth(), 'message_timestamp', 1, false,
+                    'folks', 0, $this->_params['limit']]
+            );
         } catch (Horde_Exception $e) {
             return $e->getMessage();
         }
@@ -58,7 +61,7 @@ class Folks_Block_MyComments extends Horde_Core_Block
         $url = Folks::getUrlFor('user', $GLOBALS['registry']->getAuth());
         foreach ($threads as $message) {
             $html .= '<tr><td>'
-                  . '<a href="' . $url . '" title="' . $message['message_date']. '">'
+                  . '<a href="' . $url . '" title="' . $message['message_date'] . '">'
                   . $message['message_subject'] . '</a> '
                   . '</td><td>'
                   . $message['message_author'] . '</td></tr>';

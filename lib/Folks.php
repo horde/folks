@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Folks Base Class.
  *
@@ -11,18 +12,18 @@
  * @package Folks
  */
 
-class Folks {
-
-    const VFS_PATH = '.horde/folks';
+class Folks
+{
+    public const VFS_PATH = '.horde/folks';
 
     /**
      * Returns published videos from user
      *
      * @param string $user User to check
      */
-    static function format_date($time)
+    public static function format_date($time)
     {
-        return \Horde\Date\Format::formatDate($time, $GLOBALS['prefs']->getValue('date_format'), $GLOBALS['language'] ?? 'en_US');
+        return Horde\Date\Format::formatDate($time, $GLOBALS['prefs']->getValue('date_format'), $GLOBALS['language'] ?? 'en_US');
     }
 
     /**
@@ -30,9 +31,9 @@ class Folks {
      *
      * @param string $user User to check
      */
-    static function format_datetime($time)
+    public static function format_datetime($time)
     {
-        return \Horde\Date\Format::formatDate($time, $GLOBALS['prefs']->getValue('date_format'), $GLOBALS['language'] ?? 'en_US')
+        return Horde\Date\Format::formatDate($time, $GLOBALS['prefs']->getValue('date_format'), $GLOBALS['language'] ?? 'en_US')
             . ' '
             . (date($GLOBALS['prefs']->getValue('twentyFour') ? 'G:i' : 'g:ia', $time));
     }
@@ -40,12 +41,17 @@ class Folks {
     /**
      * Returns avaiable countries
      */
-    static function getCountries()
+    public static function getCountries()
     {
         try {
-           return Horde::loadConfiguration('countries.php', 'countries', 'folks');
+            /**
+             * ARCHITECTURE VIOLATION: Using deprecated Horde::loadConfiguration()
+             * @deprecated Use $registry->loadConfigFile() instead
+             * @see Horde_Deprecated::loadConfiguration()
+             */
+            return Horde::loadConfiguration('countries.php', 'countries', 'folks');
         } catch (Horde_Exception $e) {
-            return Horde_Nls::getCountryISO();
+            return (new Horde\Nls\Nls())->countries()->all();
         }
     }
 
@@ -59,12 +65,12 @@ class Folks {
     public static function getImageUrl($user, $view = 'small', $full = false)
     {
         if (empty($GLOBALS['conf']['images']['direct'])) {
-            return Horde::url('view.php', $full)->add(array('view' => $view, 'id' => $user))->setRaw(true);
+            return Horde::url('view.php', $full)->add(['view' => $view, 'id' => $user])->setRaw(true);
         } else {
             $p = hash('md5', $user);
-            return $GLOBALS['conf']['images']['direct'] .
-                   '/' . substr(str_pad($p, 2, 0, STR_PAD_LEFT), -2) . '/' . $view . '/' .
-                   $p . '.' . $GLOBALS['conf']['images']['image_type'];
+            return $GLOBALS['conf']['images']['direct']
+                   . '/' . substr(str_pad($p, 2, 0, STR_PAD_LEFT), -2) . '/' . $view . '/'
+                   . $p . '.' . $GLOBALS['conf']['images']['image_type'];
         }
     }
 
@@ -80,29 +86,31 @@ class Folks {
      *
      * @param string  The generated URL
      */
-    function getUrlFor($controller, $data = null, $full = false, $append_session = 0)
+    public function getUrlFor($controller, $data = null, $full = false, $append_session = 0)
     {
         switch ($controller) {
-        case 'list':
-            if (empty($GLOBALS['conf']['urls']['pretty'])) {
-                return Horde::url($data . '.php', $full, $append_session);
-            } else {
-                return Horde::url('list/' . $data, $full, $append_session);
-            }
+            case 'list':
+                if (empty($GLOBALS['conf']['urls']['pretty'])) {
+                    return Horde::url($data . '.php', $full, $append_session);
+                } else {
+                    return Horde::url('list/' . $data, $full, $append_session);
+                }
 
-        case 'feed':
-            if (empty($GLOBALS['conf']['urls']['pretty'])) {
-                return Horde::url('rss/' . $data . '.php', $full, $append_session);
-            } else {
-                return Horde::url('feed/' . $data, $full, $append_session);
-            }
+                // no break
+            case 'feed':
+                if (empty($GLOBALS['conf']['urls']['pretty'])) {
+                    return Horde::url('rss/' . $data . '.php', $full, $append_session);
+                } else {
+                    return Horde::url('feed/' . $data, $full, $append_session);
+                }
 
-        case 'user':
-            if (empty($GLOBALS['conf']['urls']['pretty'])) {
-                return Horde::url('user.php', $full, $append_session)->add('user', $data);
-            } else {
-                return Horde::url('user/' . $data, $full, $append_session);
-            }
+                // no break
+            case 'user':
+                if (empty($GLOBALS['conf']['urls']['pretty'])) {
+                    return Horde::url('user.php', $full, $append_session)->add('user', $data);
+                } else {
+                    return Horde::url('user/' . $data, $full, $append_session);
+                }
         }
     }
 
@@ -112,10 +120,10 @@ class Folks {
     public static function calcAge($birthday)
     {
         if (substr($birthday, 0, 4) == '0000') {
-            return array('age' => '', 'sign' => '');
+            return ['age' => '', 'sign' => ''];
         }
 
-        list($year, $month, $day) = explode('-', $birthday);
+        [$year, $month, $day] = explode('-', $birthday);
         $year_diff = date('Y') - $year;
         $month_diff = date('m') - $month;
         $day_diff = date('d') - $day;
@@ -127,63 +135,63 @@ class Folks {
         }
 
         if (empty($year_diff)) {
-            return array('age' => '', 'sign' => '');
+            return ['age' => '', 'sign' => ''];
         }
 
         $sign = '';
         switch ($month) {
 
-        case 1:
-            $sign = ($day<21) ? _("Capricorn") : _("Aquarius");
-            break;
+            case 1:
+                $sign = ($day < 21) ? _("Capricorn") : _("Aquarius");
+                break;
 
-        case 2:
-            $sign = ($day<20) ? _("Aquarius") : _("Pisces");
-            break;
+            case 2:
+                $sign = ($day < 20) ? _("Aquarius") : _("Pisces");
+                break;
 
-        case 3:
-            $sign = ($day<21) ? _("Pisces") : _("Aries");
-            break;
+            case 3:
+                $sign = ($day < 21) ? _("Pisces") : _("Aries");
+                break;
 
-        case 4:
-            $sign = ($day<21) ? _("Aries") : _("Taurus");
-            break;
+            case 4:
+                $sign = ($day < 21) ? _("Aries") : _("Taurus");
+                break;
 
-        case 5:
-            $sign = ($day<22) ? _("Taurus") : _("Gemini");
-            break;
+            case 5:
+                $sign = ($day < 22) ? _("Taurus") : _("Gemini");
+                break;
 
-        case 6:
-            $sign = ($day<22) ? _("Gemini") : _("Cancer");
-            break;
+            case 6:
+                $sign = ($day < 22) ? _("Gemini") : _("Cancer");
+                break;
 
-        case 7:
-            $sign = ($day<23) ? _("Cancer") : _("Leo");
-            break;
+            case 7:
+                $sign = ($day < 23) ? _("Cancer") : _("Leo");
+                break;
 
-        case 8:
-            $sign = ($day<24) ? _("Leo") : _("Virgo");
-            break;
+            case 8:
+                $sign = ($day < 24) ? _("Leo") : _("Virgo");
+                break;
 
-        case 9:
-            $sign = ($day<24) ? _("Virgo") : _("Libra");
-            break;
+            case 9:
+                $sign = ($day < 24) ? _("Virgo") : _("Libra");
+                break;
 
-        case 10:
-            $sign = ($day<24) ? _("Libra") : _("Scorpio");
-            break;
+            case 10:
+                $sign = ($day < 24) ? _("Libra") : _("Scorpio");
+                break;
 
-        case 11:
-            $sign = ($day<23) ? _("Scorpio") : _("Sagittarius");
-            break;
+            case 11:
+                $sign = ($day < 23) ? _("Scorpio") : _("Sagittarius");
+                break;
 
-        case 12:
-            $sign = ($day<21) ? _("Sagittarius") : _("Capricorn");
-            break;
+            case 12:
+                $sign = ($day < 21) ? _("Sagittarius") : _("Capricorn");
+                break;
 
         }
 
-        return array('age' => $year_diff, 'sign' => $sign);
+        return ['age' => $year_diff, 'sign' => $sign];
     }
 
     /**
@@ -212,7 +220,7 @@ class Folks {
      *
      * @return string  Encripted
      */
-    static function encodeString($string, $key)
+    public static function encodeString($string, $key)
     {
         $key = substr(hash('md5', $key), 0, 24);
         $iv_size = mcrypt_get_iv_size(MCRYPT_3DES, MCRYPT_MODE_ECB);
@@ -231,16 +239,16 @@ class Folks {
      *
      * @return true on succes, PEAR_Error on failure
      */
-    public static function sendMail($to, $subject, $body, $attaches = array())
+    public static function sendMail($to, $subject, $body, $attaches = [])
     {
-        $mail = new Horde_Mime_Mail(array(
+        $mail = new Horde_Mime_Mail([
             'body' => $body,
             'Subject' => $subject,
             'To' => $to,
             'From' => $GLOBALS['conf']['support'],
             'User-Agent' => 'Folks ' . $GLOBALS['registry']->getVersion(),
             'X-Originating-IP' => $_SERVER['REMOTE_ADDR'],
-            'X-Remote-Browser' => $_SERVER['HTTP_USER_AGENT']));
+            'X-Remote-Browser' => $_SERVER['HTTP_USER_AGENT']]);
 
         foreach ($attaches as $file) {
             if (file_exists($file)) {
