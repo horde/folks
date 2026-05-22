@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Folks storage implementation for PHP's PEAR database abstraction layer.
  *
@@ -20,7 +21,7 @@
  * The table structure can be created by the scripts/sql/folks_foo.sql
  * script.
  *
- * Copyright 2008-2017 Horde LLC (http://www.horde.org/)
+ * Copyright 2008-2026 Horde LLC (http://www.horde.org/)
  *
  * See the enclosed file LICENSE for license information (GPL). If you
  * did not receive this file, see http://www.horde.org/licenses/gpl.
@@ -28,8 +29,8 @@
  * @author  Duck <duck@obala.net>
  * @package Folks
  */
-class Folks_Driver_sql extends Folks_Driver {
-
+class Folks_Driver_sql extends Folks_Driver
+{
     /**
      * Handle for the current database connection.
      *
@@ -50,7 +51,7 @@ class Folks_Driver_sql extends Folks_Driver {
      *
      * @param array $params  A hash containing connection parameters.
      */
-    public function __construct($params = array())
+    public function __construct($params = [])
     {
         $this->_params = $params;
         $this->_connect();
@@ -99,7 +100,7 @@ class Folks_Driver_sql extends Folks_Driver {
             $sql = 'SELECT user_uid FROM ' . $this->_params['table']
                 . ' WHERE user_picture = 1 ORDER BY RAND()';
         }
-        
+
         $result = $this->_db->limitQuery($sql, 0, $limit);
         $value = $result->fetchRow(DB_FETCHMODE_ORDERED);
 
@@ -112,7 +113,7 @@ class Folks_Driver_sql extends Folks_Driver {
     protected function _updateOnlineStatus()
     {
         $query = 'REPLACE INTO ' . $this->_params['online'] . ' (user_uid, ip_address, time_last_click) VALUES (?, ?, ?)';
-        return $this->_write_db->query($query, array($GLOBALS['registry']->getAuth(), $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_TIME']));
+        return $this->_write_db->query($query, [$GLOBALS['registry']->getAuth(), $_SERVER['REMOTE_ADDR'], $_SERVER['REQUEST_TIME']]);
     }
 
     /**
@@ -121,7 +122,7 @@ class Folks_Driver_sql extends Folks_Driver {
     protected function _deleteOnlineStatus($to)
     {
         $query = 'DELETE FROM ' . $this->_params['online'] . ' WHERE time_last_click < ?';
-        return $this->_write_db->query($query, array($to));
+        return $this->_write_db->query($query, [$to]);
     }
 
     /**
@@ -130,13 +131,13 @@ class Folks_Driver_sql extends Folks_Driver {
     public function deleteOnlineUser($user)
     {
         $query = 'DELETE FROM ' . $this->_params['online'] . ' WHERE user_uid = ?';
-        return $this->_write_db->query($query, array($user));
+        return $this->_write_db->query($query, [$user]);
     }
 
     /**
      * Get users by attributes
      */
-    public function getUsers($criteria = array(), $from = 0, $count = 0)
+    public function getUsers($criteria = [], $from = 0, $count = 0)
     {
         $binds = $this->_buildWhere($criteria, false);
 
@@ -163,7 +164,7 @@ class Folks_Driver_sql extends Folks_Driver {
     /**
      * Count users by attributes
      */
-    public function countUsers($criteria = array())
+    public function countUsers($criteria = [])
     {
         $binds = $this->_buildWhere($criteria, true);
         $binds[0] = 'SELECT COUNT(*) ' . $binds[0];
@@ -176,7 +177,7 @@ class Folks_Driver_sql extends Folks_Driver {
      *
      * @return array  An array containing sql statement and parameters
      */
-    private function _buildWhere($criteria = array())
+    private function _buildWhere($criteria = [])
     {
         static $parts;
 
@@ -186,12 +187,12 @@ class Folks_Driver_sql extends Folks_Driver {
         }
 
         if (empty($criteria)) {
-            $parts[$id] = array(' FROM ' . $this->_params['table'] . ' u', array());
+            $parts[$id] = [' FROM ' . $this->_params['table'] . ' u', []];
             return $parts[$id];
         }
 
         $tables = $this->_params['table'] . ' u ';
-        $params = array();
+        $params = [];
         $where = '';
 
         // WORD
@@ -258,7 +259,7 @@ class Folks_Driver_sql extends Folks_Driver {
         // Gander
         if (isset($criteria['user_gender'])) {
             $where .= ' AND user_gender = ? ';
-            $params[] = (int)$criteria['user_gender'];
+            $params[] = (int) $criteria['user_gender'];
         }
 
         // City
@@ -272,7 +273,7 @@ class Folks_Driver_sql extends Folks_Driver {
             $sql .= ' WHERE ' . substr($where, 4);
         }
 
-        $parts[$id] = array($sql, $params);
+        $parts[$id] = [$sql, $params];
 
         return $parts[$id];
     }
@@ -287,7 +288,7 @@ class Folks_Driver_sql extends Folks_Driver {
     protected function _getCryptedPassword($user)
     {
         $query = 'SELECT user_password FROM ' . $this->_params['table'] . ' WHERE user_uid = ?';
-        return $this->_db->getOne($query, array($user));
+        return $this->_db->getOne($query, [$user]);
     }
 
     /**
@@ -304,7 +305,7 @@ class Folks_Driver_sql extends Folks_Driver {
                 . ' count_attendances, count_wishes, count_galleries, count_blogs '
                 . ' FROM  ' . $this->_params['table'] . ' WHERE user_uid = ?';
 
-        $result = $this->_db->getRow($query, array(strval($user)), DB_FETCHMODE_ASSOC);
+        $result = $this->_db->getRow($query, [strval($user)], DB_FETCHMODE_ASSOC);
         if ($result instanceof PEAR_Error) {
             return $result;
         } elseif (empty($result)) {
@@ -356,7 +357,7 @@ class Folks_Driver_sql extends Folks_Driver {
         }
         $query .= ' WHERE user_uid = ?';
 
-        return $this->_write_db->query($query, array($user));
+        return $this->_write_db->query($query, [$user]);
     }
 
     /**
@@ -367,7 +368,7 @@ class Folks_Driver_sql extends Folks_Driver {
     protected function _deleteImage($user)
     {
         $query = 'UPDATE ' . $this->_params['table'] . ' SET user_picture = 0 WHERE user_uid = ?';
-        return $this->_write_db->query($query, array($user));
+        return $this->_write_db->query($query, [$user]);
     }
 
     /**
@@ -378,7 +379,7 @@ class Folks_Driver_sql extends Folks_Driver {
     protected function _logView($id)
     {
         $query = 'REPLACE INTO ' . $this->_params['views'] . ' (view_uid, user_uid, view_time) VALUES (?, ?, ?)';
-        return $this->_write_db->query($query, array($id, $GLOBALS['registry']->getAuth(), $_SERVER['REQUEST_TIME']));
+        return $this->_write_db->query($query, [$id, $GLOBALS['registry']->getAuth(), $_SERVER['REQUEST_TIME']]);
     }
 
     /**
@@ -389,25 +390,25 @@ class Folks_Driver_sql extends Folks_Driver {
     public function getViews()
     {
         $query = 'SELECT user_uid FROM ' . $this->_params['views'] . ' WHERE view_uid = ?';
-        return $this->_db->getCol($query, 0, array($GLOBALS['registry']->getAuth()));
+        return $this->_db->getCol($query, 0, [$GLOBALS['registry']->getAuth()]);
     }
 
-   /**
-    * Check if user exist
-    *
-    * @param string $user    Username
-    *
-    * @return boolean
-    */
+    /**
+     * Check if user exist
+     *
+     * @param string $user    Username
+     *
+     * @return boolean
+     */
     public function userExists($user)
     {
         $query = 'SELECT 1 FROM ' . $this->_params['table'] . ' WHERE user_uid = ?';
-        $result = $this->_db->getOne($query, array($user));
+        $result = $this->_db->getOne($query, [$user]);
         if ($result instanceof PEAR_Error) {
             return $result;
         }
 
-        return (boolean)$result;
+        return (bool) $result;
     }
 
     /**
@@ -424,33 +425,33 @@ class Folks_Driver_sql extends Folks_Driver {
         $query = 'INSERT INTO ' . $this->_params['table']
                     . ' (user_uid, user_status, user_password, user_email, signup_at, signup_by) '
                     . ' VALUES (?, ?, ?, ?, NOW(), ?)';
-        $params = array($user, 'inactive', $credentials['password'],
-                        rand() . '@' . $_SERVER['REMOTE_ADDR'],
-                        $_SERVER['REMOTE_ADDR']);
+        $params = [$user, 'inactive', $credentials['password'],
+            rand() . '@' . $_SERVER['REMOTE_ADDR'],
+            $_SERVER['REMOTE_ADDR']];
 
         return $this->_write_db->query($query, $params);
     }
 
-   /**
-    * Delete user
-    *
-    * @param string $user    Username
-    *
-    * @return boolean
-    */
+    /**
+     * Delete user
+     *
+     * @param string $user    Username
+     *
+     * @return boolean
+     */
     protected function _deleteUser($user)
     {
-        $tables = array($this->_params['table'],
-                        $this->_params['attributes'],
-                        $this->_params['friends'],
-                        $this->_params['testimonials'],
-                        $this->_params['online'],
-                        $this->_params['views'],
-                        $this->_params['out']);
+        $tables = [$this->_params['table'],
+            $this->_params['attributes'],
+            $this->_params['friends'],
+            $this->_params['testimonials'],
+            $this->_params['online'],
+            $this->_params['views'],
+            $this->_params['out']];
 
         foreach ($tables as $table) {
             $query = 'DELETE FROM ' . $table . ' WHERE user_uid = ?';
-            $result = $this->_write_db->query($query, array($user));
+            $result = $this->_write_db->query($query, [$user]);
             if ($result instanceof PEAR_Error) {
                 return $result;
             }
@@ -459,24 +460,24 @@ class Folks_Driver_sql extends Folks_Driver {
         return true;
     }
 
-   /**
-    * Save search criteria
-    *
-    * @param string $criteria    Search criteria
-    * @param string $name    Search name
-    */
+    /**
+     * Save search criteria
+     *
+     * @param string $criteria    Search criteria
+     * @param string $name    Search name
+     */
     protected function _saveSearch($criteria, $name)
     {
         $query = 'INSERT INTO ' . $this->_params['search'] . ' (user_uid, search_name, search_criteria) VALUES (?, ?, ?)';
 
-        return $this->_write_db->query($query, array($GLOBALS['registry']->getAuth(), $name, $criteria));
+        return $this->_write_db->query($query, [$GLOBALS['registry']->getAuth(), $name, $criteria]);
     }
 
-   /**
-    * Get saved search
-    *
-    * @return array saved searches
-    */
+    /**
+     * Get saved search
+     *
+     * @return array saved searches
+     */
     protected function _getSavedSearch()
     {
         $query = 'SELECT search_name FROM ' . $this->_params['search'] . ' WHERE user_uid = ?';
@@ -484,57 +485,57 @@ class Folks_Driver_sql extends Folks_Driver {
         return $this->_db->getCol($query, 'search_name', $GLOBALS['registry']->getAuth());
     }
 
-   /**
-    * Get saved search criteria
-    *
-    * @param string $name    Username
-    *
-    * @return array  search criteria
-    */
+    /**
+     * Get saved search criteria
+     *
+     * @param string $name    Username
+     *
+     * @return array  search criteria
+     */
     protected function _getSearchCriteria($name)
     {
         $query = 'SELECT search_criteria FROM ' . $this->_params['search'] . ' WHERE user_uid = ? AND search_name = ?';
 
-        return $this->_db->getOne($query, array($GLOBALS['registry']->getAuth(), $name));
+        return $this->_db->getOne($query, [$GLOBALS['registry']->getAuth(), $name]);
     }
 
-   /**
-    * Delete saved search
-    *
-    * @param string $name    Username
-    */
+    /**
+     * Delete saved search
+     *
+     * @param string $name    Username
+     */
     protected function _deleteSavedSearch($name)
     {
         $query = 'DELETE FROM ' . $this->_params['search'] . ' WHERE user_uid = ? AND search_name = ?';
 
-        return $this->_write_db->query($query, array($GLOBALS['registry']->getAuth(), $name));
+        return $this->_write_db->query($query, [$GLOBALS['registry']->getAuth(), $name]);
     }
 
-   /**
-    * Log users actions
-    *
-    * @param string $message    Log message
-    * @param string $scope    Scope
-    * @param string $user    Username
-    *
-    * @return true on success
-    */
+    /**
+     * Log users actions
+     *
+     * @param string $message    Log message
+     * @param string $scope    Scope
+     * @param string $user    Username
+     *
+     * @return true on success
+     */
     protected function _logActivity($message, $scope, $user)
     {
         $query = 'INSERT INTO ' . $this->_params['activity']
                 . ' (user_uid, activity_message, activity_scope, activity_date) VALUES (?, ?, ?, ?)';
 
-        return $this->_write_db->query($query, array($user, $message, $scope, $_SERVER['REQUEST_TIME']));
+        return $this->_write_db->query($query, [$user, $message, $scope, $_SERVER['REQUEST_TIME']]);
     }
 
-   /**
-    * Get user's activity
-    *
-    * @param string $user    Username
-    * @param string $activity    Number of actions to return
-    *
-    * @return array    Activity log
-    */
+    /**
+     * Get user's activity
+     *
+     * @param string $user    Username
+     * @param string $activity    Number of actions to return
+     *
+     * @return array    Activity log
+     */
     protected function _getActivity($user, $limit)
     {
         $query = 'SELECT activity_message, activity_scope, activity_date, user_uid FROM '
@@ -542,24 +543,24 @@ class Folks_Driver_sql extends Folks_Driver {
                 . 'ORDER BY activity_date DESC';
         $query = $this->_db->modifyLimitQuery($query, 0, $limit);
 
-        return $this->_db->getAll($query, array($user), DB_FETCHMODE_ASSOC);
+        return $this->_db->getAll($query, [$user], DB_FETCHMODE_ASSOC);
     }
 
-   /**
-    * Delete users activity
-    *
-    * @param string $scope    Scope
-    * @param integer $date    Date
-    * @param string $user    Username
-    *
-    * @return true on success
-    */
+    /**
+     * Delete users activity
+     *
+     * @param string $scope    Scope
+     * @param integer $date    Date
+     * @param string $user    Username
+     *
+     * @return true on success
+     */
     protected function _deleteActivity($scope, $date, $user)
     {
         $query = 'DELETE FROM ' . $this->_params['activity']
                 . ' WHERE user_uid = ? AND activity_scope = ? AND activity_date = ?';
 
-        return $this->_write_db->query($query, array($user, $scope, $date));
+        return $this->_write_db->query($query, [$user, $scope, $date]);
     }
 
     /**

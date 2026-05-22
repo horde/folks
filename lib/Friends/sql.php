@@ -1,9 +1,10 @@
 <?php
+
 /**
  * Folks_Friends:: defines an API for implementing storage backends for
  * Folks.
  *
- * Copyright 2007-2017 Horde LLC (http://www.horde.org/)
+ * Copyright 2007-2026 Horde LLC (http://www.horde.org/)
  *
  * See the enclosed file LICENSE for license information (GPL). If you
  * did not receive this file, see http://www.horde.org/licenses/gpl.
@@ -11,8 +12,8 @@
  * @author Duck <duck@obala.net>
  * @package Folks
  */
-class Folks_Friends_sql extends Folks_Friends {
-
+class Folks_Friends_sql extends Folks_Friends
+{
     /**
      * Handle for the current database connection.
      *
@@ -33,7 +34,7 @@ class Folks_Friends_sql extends Folks_Friends {
      *
      * @param array $params  A hash containing connection parameters.
      */
-    protected function __construct($params = array())
+    protected function __construct($params = [])
     {
         parent::__construct($params);
 
@@ -52,7 +53,7 @@ class Folks_Friends_sql extends Folks_Friends {
                 . ' WHERE user_uid = ? '
                 . ' ORDER BY friend_uid ASC';
 
-        return $this->_db->getCol($query, 0, array($this->_user));
+        return $this->_db->getCol($query, 0, [$this->_user]);
     }
 
     /**
@@ -65,7 +66,7 @@ class Folks_Friends_sql extends Folks_Friends {
         $query = 'INSERT INTO ' . $this->_params['blacklist']
                         . ' (user_uid, friend_uid) VALUES (?, ?)';
 
-        return $this->_write_db->query($query, array($this->_user, $user));
+        return $this->_write_db->query($query, [$this->_user, $user]);
     }
 
     /**
@@ -78,7 +79,7 @@ class Folks_Friends_sql extends Folks_Friends {
         $query = 'DELETE FROM ' . $this->_params['blacklist']
                     . ' WHERE user_uid = ? AND friend_uid = ?';
 
-        return $this->_write_db->query($query, array($this->_user, $user));
+        return $this->_write_db->query($query, [$this->_user, $user]);
     }
 
     /**
@@ -93,7 +94,7 @@ class Folks_Friends_sql extends Folks_Friends {
         $query = 'INSERT INTO ' . $this->_params['friends']
                 . ' (user_uid, friend_uid, friend_ask) VALUES (?, ?, ?)';
 
-        return $this->_write_db->query($query, array($this->_user, $friend, $approve));
+        return $this->_write_db->query($query, [$this->_user, $friend, $approve]);
     }
 
     /**
@@ -106,7 +107,7 @@ class Folks_Friends_sql extends Folks_Friends {
         $query = 'UPDATE ' . $this->_params['friends']
                 . ' SET friend_ask = ? WHERE user_uid = ? AND friend_uid = ?';
 
-        $result = $this->_write_db->query($query, array(0, $friend, $this->_user));
+        $result = $this->_write_db->query($query, [0, $friend, $this->_user]);
         if ($result instanceof PEAR_Error) {
             return $result;
         }
@@ -115,7 +116,7 @@ class Folks_Friends_sql extends Folks_Friends {
         $query = 'REPLACE INTO ' . $this->_params['friends']
                 . ' (user_uid, friend_uid, friend_ask) VALUES (?, ?, ?)';
 
-        return $this->_write_db->query($query, array($this->_user, $friend, 0));
+        return $this->_write_db->query($query, [$this->_user, $friend, 0]);
     }
 
     /**
@@ -128,7 +129,7 @@ class Folks_Friends_sql extends Folks_Friends {
         $query = 'DELETE FROM ' . $this->_params['friends']
                     . ' WHERE user_uid = ? AND friend_uid = ?';
 
-        return $this->_write_db->query($query, array($this->_user, $friend));
+        return $this->_write_db->query($query, [$this->_user, $friend]);
     }
 
     /**
@@ -142,7 +143,7 @@ class Folks_Friends_sql extends Folks_Friends {
                 . ' WHERE user_uid = ? and friend_ask = ?'
                 . ' ORDER BY friend_uid ASC';
 
-        return $this->_db->getCol($query, 0, array($this->_user, 0));
+        return $this->_db->getCol($query, 0, [$this->_user, 0]);
     }
 
     /**
@@ -154,7 +155,7 @@ class Folks_Friends_sql extends Folks_Friends {
                 . ' WHERE user_uid = ? AND friend_ask = ?'
                 . ' ORDER BY friend_uid ASC';
 
-        return $this->_db->getCol($query, 0, array($this->_user, 1));
+        return $this->_db->getCol($query, 0, [$this->_user, 1]);
     }
 
     /**
@@ -166,7 +167,7 @@ class Folks_Friends_sql extends Folks_Friends {
                 . ' WHERE friend_uid = ? AND friend_ask = ?'
                 . ' ORDER BY user_uid ASC';
 
-        return $this->_db->getCol($query, 0, array($this->_user, 1));
+        return $this->_db->getCol($query, 0, [$this->_user, 1]);
     }
 
     /**
@@ -180,7 +181,7 @@ class Folks_Friends_sql extends Folks_Friends {
                 . ' WHERE friend_uid = ? AND friend_ask = ?'
                 . ' ORDER BY friend_uid ASC';
 
-        return $this->_db->getCol($query, 0, array($this->_user, 0));
+        return $this->_db->getCol($query, 0, [$this->_user, 0]);
     }
 
     /**
@@ -188,7 +189,7 @@ class Folks_Friends_sql extends Folks_Friends {
      */
     protected function _getGroups()
     {
-        return array(_("Friends"));
+        return [_("Friends")];
     }
 
     /**
@@ -199,10 +200,10 @@ class Folks_Friends_sql extends Folks_Friends {
      */
     protected function _connect()
     {
-        $this->_params = array_merge(array(
+        $this->_params = array_merge([
             'blacklist' => 'folks_blacklist',
-            'friends' => 'folks_friends'
-        ), $this->_params);
+            'friends' => 'folks_friends',
+        ], $this->_params);
 
         $this->_db = $GLOBALS['injector']->getInstance('Horde_Core_Factory_DbPear')->create('read', 'folks', 'storage');
         $this->_write_db = $GLOBALS['injector']->getInstance('Horde_Core_Factory_DbPear')->create('rw', 'folks', 'storage');

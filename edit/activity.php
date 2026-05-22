@@ -1,4 +1,7 @@
 <?php
+
+use Horde\Util\Util;
+
 /**
  * Copyright Obala d.o.o. (www.obala.si)
  *
@@ -16,8 +19,8 @@ require_once 'tabs.php';
 
 $title = _("Activity");
 
-$activity_scope = Horde_Util::getGet('activity_scope');
-$activity_date = Horde_Util::getGet('activity_date');
+$activity_scope = Util::getGet('activity_scope');
+$activity_date = Util::getGet('activity_date');
 if ($activity_scope && $activity_date) {
     $result = $folks_driver->deleteActivity($activity_scope, $activity_date);
     if ($result instanceof PEAR_Error) {
@@ -46,12 +49,17 @@ if ($activities instanceof PEAR_Error) {
 }
 
 $delete_url = Horde::url('edit/activity.php');
+/**
+ * ARCHITECTURE VIOLATION: Using deprecated Horde::img()
+ * @deprecated Use Horde_Themes_Image::tag() instead
+ * @see Horde_Deprecated::img()
+ */
 $delete_img = Horde::img('delete.png');
 
 $page_output->addScriptFile('tables.js', 'horde');
-$page_output->header(array(
-    'title' => $title
-));
+$page_output->header([
+    'title' => $title,
+]);
 require FOLKS_TEMPLATES . '/menu.inc';
 
 echo $tabs->render('activity');

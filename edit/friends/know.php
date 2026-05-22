@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright Obala d.o.o. (www.obala.si)
  *
@@ -9,7 +10,8 @@
  * @package Folks
  */
 
-require_once __DIR__ . '/../../lib/base.php';;
+require_once __DIR__ . '/../../lib/base.php';
+;
 require_once FOLKS_BASE . '/edit/tabs.php';
 
 $title = _("People you might know");
@@ -22,29 +24,39 @@ $friends = Folks_Friends::singleton();
 $list = $friends->getPossibleFriends(20);
 if ($list instanceof PEAR_Error) {
     $notification->push($list);
-    $list = array();
+    $list = [];
 }
 
+/**
+ * ARCHITECTURE VIOLATION: Using deprecated Horde::img()
+ * @deprecated Use Horde_Themes_Image::tag() instead
+ * @see Horde_Deprecated::img()
+ */
 // Prepare actions
-$actions = array(
-    array('url' => Horde::url('edit/friends/add.php'),
-          'img' => Horde::img('delete.png'),
-          'id' => 'user',
-          'name' => _("Add")),
-    array('url' => Horde::url('user.php'),
-          'img' => Horde::img('user.png'),
-          'id' => 'user',
-          'name' => _("View profile")));
+$actions = [
+    ['url' => Horde::url('edit/friends/add.php'),
+        'img' => Horde::img('delete.png'),
+        'id' => 'user',
+        'name' => _("Add")],
+    ['url' => Horde::url('user.php'),
+        'img' => Horde::img('user.png'),
+        'id' => 'user',
+        'name' => _("View profile")]];
 if ($registry->hasInterface('letter')) {
-    $actions[] = array('url' => $registry->callByPackage('letter', 'compose', ''),
-                        'img' => Horde::img('letter.png'),
-                        'id' => 'user_to',
-                        'name' => _("Send message"));
+    /**
+     * ARCHITECTURE VIOLATION: Using deprecated Horde::img()
+     * @deprecated Use Horde_Themes_Image::tag() instead
+     * @see Horde_Deprecated::img()
+     */
+    $actions[] = ['url' => $registry->callByPackage('letter', 'compose', ''),
+        'img' => Horde::img('letter.png'),
+        'id' => 'user_to',
+        'name' => _("Send message")];
 }
 
-$page_output->header(array(
-    'title' => $title
-));
+$page_output->header([
+    'title' => $title,
+]);
 require FOLKS_TEMPLATES . '/menu.inc';
 
 echo $tabs->render('friends');

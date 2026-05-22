@@ -1,5 +1,8 @@
 <?php
- /**
+
+use Horde\Util\Util;
+
+/**
  * Copyright Obala d.o.o. (www.obala.si)
  *
  * See the enclosed file LICENSE for license information (GPL). If you
@@ -12,7 +15,7 @@
 require_once __DIR__ . '/lib/base.php';
 
 // Load profile
-$user = Horde_Util::getFormData('user', $GLOBALS['registry']->getAuth());
+$user = Util::getFormData('user', $GLOBALS['registry']->getAuth());
 $profile = $folks_driver->getProfile($user);
 if ($profile instanceof PEAR_Error) {
     $notification->push($profile);
@@ -21,24 +24,25 @@ if ($profile instanceof PEAR_Error) {
 
 // Load its friend list
 require_once FOLKS_BASE . '/lib/Friends.php';
-$friends_driver = Folks_Friends::singleton(null, array('user' => $user));
+$friends_driver = Folks_Friends::singleton(null, ['user' => $user]);
 
 // Log user view
 $folks_driver->logView($user);
 
 // Get user activity
-if ($profile['activity_log'] == 'all' ||
-    $registry->isAuthenticated() && (
-        $profile['activity_log'] == 'authenticated' ||
-        $profile['activity_log'] == 'friends' && $friends_driver->isFriend($user))
-    ) {
+if ($profile['activity_log'] == 'all'
+    || $registry->isAuthenticated() && (
+        $profile['activity_log'] == 'authenticated'
+        || $profile['activity_log'] == 'friends' && $friends_driver->isFriend($user)
+    )
+) {
     $profile['activity_log'] = $folks_driver->getActivity($user);
     if ($profile['activity_log'] instanceof PEAR_Error) {
         $notification->push($profile);
-        $profile['activity_log'] = array();
+        $profile['activity_log'] = [];
     }
 } else {
-    $profile['activity_log'] = array();
+    $profile['activity_log'] = [];
 }
 
 // Prepare an process activity form
@@ -58,44 +62,44 @@ if ($user == $GLOBALS['registry']->getAuth()) {
 }
 
 $page_output->addScriptFile('stripe.js', 'horde');
-$page_output->header(array(
-    'title' => sprintf(_("%s's profile"), $user)
-));
-$notification->notify(array('listeners' => 'status'));
+$page_output->header([
+    'title' => sprintf(_("%s's profile"), $user),
+]);
+$notification->notify(['listeners' => 'status']);
 switch ($profile['user_status']) {
 
-case 'inactive':
-    require FOLKS_TEMPLATES . '/user/inactive.php';
-break;
+    case 'inactive':
+        require FOLKS_TEMPLATES . '/user/inactive.php';
+        break;
 
-case 'deleted':
-case 'deactivated':
-    require FOLKS_TEMPLATES . '/user/deleted.php';
-break;
+    case 'deleted':
+    case 'deactivated':
+        require FOLKS_TEMPLATES . '/user/deleted.php';
+        break;
 
-case 'private':
-    require FOLKS_TEMPLATES . '/user/private.php';
-break;
+    case 'private':
+        require FOLKS_TEMPLATES . '/user/private.php';
+        break;
 
-case 'public_authenticated':
-    if ($registry->isAuthenticated()) {
+    case 'public_authenticated':
+        if ($registry->isAuthenticated()) {
+            require FOLKS_TEMPLATES . '/user/user.php';
+        } else {
+            require FOLKS_TEMPLATES . '/user/authenticated.php';
+        }
+        break;
+
+    case 'public_friends':
+        if ($friends_driver->isFriend($user)) {
+            require FOLKS_TEMPLATES . '/user/user.php';
+        } else {
+            require FOLKS_TEMPLATES . '/user/friends.php';
+        }
+        break;
+
+    default:
         require FOLKS_TEMPLATES . '/user/user.php';
-    } else {
-        require FOLKS_TEMPLATES . '/user/authenticated.php';
-    }
-break;
-
-case 'public_friends':
-    if ($friends_driver->isFriend($user)) {
-        require FOLKS_TEMPLATES . '/user/user.php';
-    } else {
-        require FOLKS_TEMPLATES . '/user/friends.php';
-    }
-break;
-
-default:
-    require FOLKS_TEMPLATES . '/user/user.php';
-break;
+        break;
 }
 
 $page_output->footer();

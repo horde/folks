@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright Obala d.o.o. (www.obala.si)
  *
@@ -18,9 +19,9 @@ $tabs = new Horde_Core_Ui_Tabs('what', $vars);
 $tabs->addTab(_("Edit my profile"), Horde::url('edit/edit.php'), 'edit');
 $tabs->addTab(_("Privacy"), Horde::url('edit/privacy.php'), 'privacy');
 $tabs->addTab(_("Blacklist"), Horde::url('edit/friends/blacklist.php'), 'blacklist');
-$tabs->addTab(_("Friends"),  Horde::url('edit/friends/index.php'), 'friends');
-$tabs->addTab(_("Groups"),  Horde::url('edit/friends/groups.php'), 'groups');
-$tabs->addTab(_("Activity"),  Horde::url('edit/activity.php'), 'activity');
+$tabs->addTab(_("Friends"), Horde::url('edit/friends/index.php'), 'friends');
+$tabs->addTab(_("Groups"), Horde::url('edit/friends/groups.php'), 'groups');
+$tabs->addTab(_("Activity"), Horde::url('edit/activity.php'), 'activity');
 $tabs->addTab(_("Password"), Horde::url('edit/password.php'), 'password');
 
 if ($conf['comments']['allow'] != 'never'

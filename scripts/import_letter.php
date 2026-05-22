@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Script to import Letter friend list
  *
@@ -15,7 +16,7 @@
 exit;
 
 require_once __DIR__ . '/../lib/Application.php';
-Horde_Registry::appInit('folks', array('cli' => true));
+Horde_Registry::appInit('folks', ['cli' => true]);
 
 try {
     $db = $injector->getInstance('Horde_Core_Factory_DbPear')->create();
@@ -27,7 +28,7 @@ $sql = 'SELECT pref_uid, pref_value, pref_name FROM horde_prefs WHERE '
         . ' pref_scope = ? AND (pref_name = ? OR pref_name = ?)'
         . ' AND pref_value <> ? ORDER BY pref_uid';
 
-$result = $db->query($sql, array('letter', 'blacklist', 'whitelist', ''));
+$result = $db->query($sql, ['letter', 'blacklist', 'whitelist', '']);
 if ($result instanceof PEAR_Error) {
     die($result);
 }
@@ -40,7 +41,7 @@ if ($sth instanceof PEAR_Error) {
 
 while ($row = $result->fetchRow(DB_FETCHMODE_ASSOC)) {
 
-    $data = array();
+    $data = [];
     $list = $row['pref_name'] == 'blacklist' ? 1 : 0;
 
     $users = preg_split("/[\s,]+/", $row['pref_value'], -1, PREG_SPLIT_NO_EMPTY);
@@ -48,7 +49,7 @@ while ($row = $result->fetchRow(DB_FETCHMODE_ASSOC)) {
     $users = array_unique($users);
 
     foreach ($users as $user) {
-        $data[] = array($row['pref_uid'], $list, $user);
+        $data[] = [$row['pref_uid'], $list, $user];
     }
 
     if (empty($data)) {

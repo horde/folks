@@ -6,7 +6,7 @@ require_once __DIR__ . '/sql.php';
  * Folks_Friends:: defines an API for implementing storage backends for
  * Folks.
  *
- * Copyright 2007-2017 Horde LLC (http://www.horde.org/)
+ * Copyright 2007-2026 Horde LLC (http://www.horde.org/)
  *
  * See the enclosed file LICENSE for license information (GPL). If you
  * did not receive this file, see http://www.horde.org/licenses/gpl.
@@ -14,8 +14,8 @@ require_once __DIR__ . '/sql.php';
  * @author Duck <duck@obala.net>
  * @package Folks
  */
-class Folks_Friends_shared extends  Folks_Friends_sql {
-
+class Folks_Friends_shared extends Folks_Friends_sql
+{
     /**
      * Share holder
      *
@@ -29,7 +29,7 @@ class Folks_Friends_shared extends  Folks_Friends_sql {
      *
      * @var array
      */
-    protected $_capabilities = array('groups_add' => true);
+    protected $_capabilities = ['groups_add' => true];
 
     /**
      * Get user owning group
@@ -56,9 +56,9 @@ class Folks_Friends_shared extends  Folks_Friends_sql {
     protected function _getGroups()
     {
         $GLOBALS['folks_shares'] = $GLOBALS['injector']->getInstance('Horde_Core_Factory_Share')->create();
-        $groups = $GLOBALS['folks_shares']->listShares($this->_user, array('perm' => Horde_Perms::READ));
+        $groups = $GLOBALS['folks_shares']->listShares($this->_user, ['perm' => Horde_Perms::READ]);
 
-        $list = array();
+        $list = [];
         foreach ($groups as $group) {
             $list[$group->getId()] = $group->get('name');
         }
@@ -81,9 +81,9 @@ class Folks_Friends_shared extends  Folks_Friends_sql {
         $share = $GLOBALS['folks_shares']->getShareById($group);
 
         // Only owners of a group can delete them
-        if (!$GLOBALS['registry']->getAuth() ||
-            ($GLOBALS['registry']->getAuth() != $share->get('owner') &&
-             !$GLOBALS['registry']->isAdmin(array('permission' => 'folks:admin')))) {
+        if (!$GLOBALS['registry']->getAuth()
+            || ($GLOBALS['registry']->getAuth() != $share->get('owner')
+             && !$GLOBALS['registry']->isAdmin(['permission' => 'folks:admin']))) {
             return PEAR::raiseError("You can rename only your own groups.");
         }
 
@@ -113,9 +113,9 @@ class Folks_Friends_shared extends  Folks_Friends_sql {
         }
 
         // Only owners of a group can delete them
-        if (!$GLOBALS['registry']->getAuth() ||
-            ($GLOBALS['registry']->getAuth() != $share->get('owner') &&
-             !$GLOBALS['registry']->isAdmin(array('permission' => 'folks:admin')))) {
+        if (!$GLOBALS['registry']->getAuth()
+            || ($GLOBALS['registry']->getAuth() != $share->get('owner')
+             && !$GLOBALS['registry']->isAdmin(['permission' => 'folks:admin']))) {
             return PEAR::raiseError("You can delete only your own groups.");
         }
 

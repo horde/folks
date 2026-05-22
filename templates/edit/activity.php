@@ -23,11 +23,17 @@ if (empty($activities)) {
 <?php foreach ($activities as $activity) { ?>
 <tr>
     <td><a href="<?php echo $registry->get('webroot', $activity['activity_scope']) ?>" />
-        <?php echo Horde::img(Horde_Themes::img($activitiy['activity_scope'] . 'png', $activity['activity_scope'])) ?>
+        <?php /**
+ * ARCHITECTURE VIOLATION: Using deprecated Horde::img()
+ * @deprecated Use Horde_Themes_Image::tag() instead
+ * @see Horde_Deprecated::img()
+ */
+echo Horde::img(Horde_Themes::img($activitiy['activity_scope'] . 'png', $activity['activity_scope'])) ?>
         <?php echo $registry->get('name', $activity['activity_scope']) ?></a>
     </td>
     <td><?php echo Folks::format_datetime($activity['activity_date']) ?></td>
-    <td><?php echo $activity['activity_message']; unset($activity['activity_message']); ?></td>
+    <td><?php echo $activity['activity_message'];
+    unset($activity['activity_message']); ?></td>
     <td><a href="<?php echo $delete_url->add($activity) ?>" title="<?php echo _("Delete") ?>"/><?php echo $delete_img ?></a></td>
 </tr>
 <?php } ?>

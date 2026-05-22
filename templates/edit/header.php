@@ -16,7 +16,7 @@ if ($online instanceof PEAR_Error) {
 $groups = $friends->getGroups();
 if ($groups instanceof PEAR_Error) {
     $notification->push($groups);
-    $groups = array();
+    $groups = [];
 }
 
 echo '<tr><td><a href="' . Horde::url('edit/friends/add.php') . '">' . _("Add") . '</a>';
@@ -39,7 +39,12 @@ echo '<tr><td><a href="' . Horde::url('edit/friends/blacklist.php') . '">' . _("
 <br />
 <br />
 
-<h1 class="header"><?php echo Horde::img('feed.png') . ' ' . _("Feeds") ?></h1>
+<h1 class="header"><?php /**
+ * ARCHITECTURE VIOLATION: Using deprecated Horde::img()
+ * @deprecated Use Horde_Themes_Image::tag() instead
+ * @see Horde_Deprecated::img()
+ */
+echo Horde::img('feed.png') . ' ' . _("Feeds") ?></h1>
 <table class="striped">
 <tr><td><a href="<?php echo Folks::getUrlFor('feed', 'online') ?>"><?php echo _("Online users") ?></a></td></tr>
 <tr><td><a href="<?php echo Folks::getUrlFor('feed', 'friends') ?>"><?php echo _("Online friends") ?></a></td></tr>

@@ -27,6 +27,4 @@ namespace Horde\Folks;
  * @author   Duck <duck@obala.net>
  * @license  http://www.horde.org/licenses/gpl GPL
  */
-class Folks
-{
-}
+class Folks {}

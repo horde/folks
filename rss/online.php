@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright Obala d.o.o. (www.obala.si)
  *
@@ -14,7 +15,7 @@ require_once __DIR__ . '/../lib/base.php';
 
 $users = $folks_driver->getOnlineUsers();
 if ($users instanceof PEAR_Error) {
-    $users = array();
+    $users = [];
 } else {
     $users = array_flip($users);
 }

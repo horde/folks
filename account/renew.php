@@ -1,6 +1,9 @@
 <?php
+
+use Horde\Util\Util;
+
 /**
- * Copyright 2007 Obala d.o.o. (http://www.obala.si/)
+ * Copyright 2007-2026 Obala d.o.o. (http://www.obala.si/)
  *
  * See the enclosed file LICENSE for license information (LGPL). If you
  * did not receive this file, see http://www.horde.org/licenses/lgpl21.
@@ -13,14 +16,14 @@ require_once __DIR__ . '/tabs.php';
 $title = _("Renew account");
 
 // Get supplied code
-$code = Horde_Util::getGet('code');
+$code = Util::getGet('code');
 if (empty($code)) {
     $notification->push(_("You must supply a confirmation code."));
     throw new Horde_Exception_AuthenticationFailure();
 }
 
 // Get supplied username
-$user = Horde_Util::getGet('user');
+$user = Util::getGet('user');
 if (empty($code)) {
     $notification->push(_("You must supply a username."));
     throw new Horde_Exception_AuthenticationFailure();
@@ -48,7 +51,7 @@ if ($internal_code instanceof PEAR_Error) {
 
 // Check code
 if ($internal_code == $code) {
-    $update = $folks_driver->saveProfile(array('user_status' => 'active', $user));
+    $update = $folks_driver->saveProfile(['user_status' => 'active', $user]);
     if ($update instanceof PEAR_Error) {
         $notification->push($update);
     } else {

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Folks Notification Class.
  *
@@ -10,12 +11,12 @@
  * @author  Duck <duck@obala.net>
  * @package Folks
  */
-class Folks_Notification {
-
+class Folks_Notification
+{
     /**
      * Instances
      */
-    private static $instances = array();
+    private static $instances = [];
 
     /**
      * Driver parameters
@@ -28,7 +29,7 @@ class Folks_Notification {
      * @param array $params   A hash containing any additional configuration
      *                        or connection parameters a subclass might need.
      */
-    public function __construct($params = array())
+    public function __construct($params = [])
     {
         $this->_params = $params;
     }
@@ -43,7 +44,7 @@ class Folks_Notification {
      *
      * @return true on succes, PEAR_Error on failure
      */
-    public function notifyAll($subject, $body, $attachments = array(), $user = null)
+    public function notifyAll($subject, $body, $attachments = [], $user = null)
     {
         $result = false;
 
@@ -85,7 +86,7 @@ class Folks_Notification {
      *
      * @return true on succes, PEAR_Error on failure
      */
-    public function notifyAllFriends($subject, $body, $attachments = array(), $user = null)
+    public function notifyAllFriends($subject, $body, $attachments = [], $user = null)
     {
         $result = false;
 
@@ -125,7 +126,7 @@ class Folks_Notification {
      *
      * @return true on succes, PEAR_Error on failure
      */
-    public function notifyAdmins($subject, $body, $attachments = array())
+    public function notifyAdmins($subject, $body, $attachments = [])
     {
         $result = false;
 
@@ -191,7 +192,7 @@ class Folks_Notification {
      */
     public function getMethods($type = 'user')
     {
-        $methods = array();
+        $methods = [];
 
         foreach ($GLOBALS['conf']['notification'] as $driver => $params) {
             if (empty($params['enabled'])) {

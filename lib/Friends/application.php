@@ -1,8 +1,9 @@
 <?php
+
 /**
  * Folks external application firends implementaton
  *
- * Copyright 2008-2017 Horde LLC (http://www.horde.org/)
+ * Copyright 2008-2026 Horde LLC (http://www.horde.org/)
  *
  * See the enclosed file LICENSE for license information (GPL). If you
  * did not receive this file, see http://www.horde.org/licenses/gpl.
@@ -10,8 +11,8 @@
  * @author  Duck <duck@obala.net>
  * @package Folks
  */
-class Folks_Friends_application extends Folks_Friends {
-
+class Folks_Friends_application extends Folks_Friends
+{
     /**
      * Add user to a friend list
      *
@@ -24,7 +25,10 @@ class Folks_Friends_application extends Folks_Friends {
         }
 
         return $GLOBALS['registry']->callByPackage(
-            $this->_params['app'], 'addFriend', array($friend));
+            $this->_params['app'],
+            'addFriend',
+            [$friend]
+        );
     }
 
     /**
@@ -39,7 +43,10 @@ class Folks_Friends_application extends Folks_Friends {
         }
 
         return $GLOBALS['registry']->callByPackage(
-            $this->_params['app'], 'removeFriend', array($friend));
+            $this->_params['app'],
+            'removeFriend',
+            [$friend]
+        );
     }
 
     /**
@@ -54,7 +61,10 @@ class Folks_Friends_application extends Folks_Friends {
         }
 
         return $GLOBALS['registry']->callByPackage(
-            $this->_params['app'], 'getFriends', array($this->_user));
+            $this->_params['app'],
+            'getFriends',
+            [$this->_user]
+        );
     }
 
     /**
@@ -69,7 +79,10 @@ class Folks_Friends_application extends Folks_Friends {
         }
 
         return $GLOBALS['registry']->callByPackage(
-            $this->_params['app'], 'getBlacklist', array($this->_user));
+            $this->_params['app'],
+            'getBlacklist',
+            [$this->_user]
+        );
     }
 
     /**
@@ -84,7 +97,10 @@ class Folks_Friends_application extends Folks_Friends {
         }
 
         return $GLOBALS['registry']->callByPackage(
-            $this->_params['app'], 'addBlacklisted', array($user));
+            $this->_params['app'],
+            'addBlacklisted',
+            [$user]
+        );
     }
 
     /**
@@ -99,7 +115,10 @@ class Folks_Friends_application extends Folks_Friends {
         }
 
         return $GLOBALS['registry']->callByPackage(
-            $this->_params['app'], 'removeBlacklisted', array($user));
+            $this->_params['app'],
+            'removeBlacklisted',
+            [$user]
+        );
     }
 
     /**
@@ -108,10 +127,12 @@ class Folks_Friends_application extends Folks_Friends {
     protected function _getGroups()
     {
         if (!$GLOBALS['registry']->hasMethod('getGroups', $this->_params['app'])) {
-            return array();
+            return [];
         }
 
         return $GLOBALS['registry']->callByPackage(
-            $this->_params['app'], 'getGroups');
+            $this->_params['app'],
+            'getGroups'
+        );
     }
 }

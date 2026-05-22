@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Script calculate user popularity. Please modify it for your needs.
  *
@@ -15,7 +16,7 @@
 exit;
 
 require_once __DIR__ . '/../lib/Application.php';
-Horde_Registry::appInit('folks', array('cli' => true));
+Horde_Registry::appInit('folks', ['cli' => true]);
 
 try {
     $db = $injector->getInstance('Horde_Core_Factory_DbPear')->create();
@@ -23,7 +24,7 @@ try {
     $cli->fatal($e);
 }
 
-$users = array();
+$users = [];
 $total = 0; // total points
 $totalnum = 0; // total messages
 
@@ -52,14 +53,14 @@ while ($row = $result->fetchRow()) {
 }
 
 // Count user activiy in various app
-$apps = array(
-'news' => array('query' => 'SELECT DISTINCT user, id FROM news WHERE publish >= (NOW() - INTERVAL 3 MONTH) AND status = 1',
-                  'modify' => 2),
-'thomas' => array('query' => 'SELECT DISTINCT user_uid, id FROM thomas_blogs WHERE created >= (NOW() - INTERVAL 3 MONTH)',
-                  'modify' => 3),
-'albums' => array('query' => 'SELECT DISTINCT share_owner, share_id FROM ansel_shares WHERE attribute_date_created >= UNIX_TIMESTAMP(NOW() - INTERVAL 3 MONTH)',
-                  'modify' => 3)
-);
+$apps = [
+    'news' => ['query' => 'SELECT DISTINCT user, id FROM news WHERE publish >= (NOW() - INTERVAL 3 MONTH) AND status = 1',
+        'modify' => 2],
+    'thomas' => ['query' => 'SELECT DISTINCT user_uid, id FROM thomas_blogs WHERE created >= (NOW() - INTERVAL 3 MONTH)',
+        'modify' => 3],
+    'albums' => ['query' => 'SELECT DISTINCT share_owner, share_id FROM ansel_shares WHERE attribute_date_created >= UNIX_TIMESTAMP(NOW() - INTERVAL 3 MONTH)',
+        'modify' => 3],
+];
 
 foreach ($apps as $app => $defs) {
     $result = $db->query($defs['query']);
@@ -68,8 +69,8 @@ foreach ($apps as $app => $defs) {
     }
 
     while ($row = $result->fetchRow()) {
-        $sql = 'SELECT COUNT(*) FROM agora_forums_' .  $app . ', agora_messages_' .  $app . ' WHERE forum_name = ? AND forum_id = msg.forum_id';
-        $row2 = $db->getRow($sql, array($row[0]));
+        $sql = 'SELECT COUNT(*) FROM agora_forums_' . $app . ', agora_messages_' . $app . ' WHERE forum_name = ? AND forum_id = msg.forum_id';
+        $row2 = $db->getRow($sql, [$row[0]]);
         if ($row2 instanceof PEAR_Error) {
             $cli->fatal($row2);
         }
@@ -82,11 +83,11 @@ foreach ($apps as $app => $defs) {
 // calclulate users popolarity
 reset($users);
 $maxp = 0;
-foreach ($users as $u => $v){
+foreach ($users as $u => $v) {
     if (!empty($u) && !empty($v)) {
         continue;
     }
-    if ($v>$maxp) {
+    if ($v > $maxp) {
         $maxp = $v;
     }
 }
@@ -98,14 +99,14 @@ if ($result instanceof PEAR_Error) {
 }
 
 reset($users);
-foreach ($users as $u => $v){
+foreach ($users as $u => $v) {
     if (!empty($u) && !empty($v)) {
         continue;
     }
 
-    $p = ceil($v/$maxp*100);
+    $p = ceil($v / $maxp * 100);
 
-    $result = $db->query('UPDATE folks_users SET popularity = ? WHERE user_uid = ?' , array($u, $p));
+    $result = $db->query('UPDATE folks_users SET popularity = ? WHERE user_uid = ?', [$u, $p]);
     if ($result instanceof PEAR_Error) {
         $cli->fatal($result);
     }

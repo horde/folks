@@ -1,4 +1,7 @@
 <?php
+
+use Horde\Util\Util;
+
 /**
  * Copyright Obala d.o.o. (www.obala.si)
  *
@@ -20,7 +23,7 @@ require_once FOLKS_BASE . '/lib/Friends.php';
 $friends = Folks_Friends::singleton();
 
 // Perform action
-$user = Horde_Util::getGet('user');
+$user = Util::getGet('user');
 if ($user) {
     if ($friends->isBlacklisted($user)) {
         $result = $friends->removeBlacklisted($user);
@@ -45,7 +48,7 @@ if ($user) {
 $list = $friends->getBlacklist();
 if ($list instanceof PEAR_Error) {
     $notification->push($list);
-    $blacklist = array();
+    $blacklist = [];
 }
 
 // Users online
@@ -58,25 +61,30 @@ if ($online instanceof PEAR_Error) {
 $groups = $friends->getGroups();
 if ($groups instanceof PEAR_Error) {
     $notification->push($groups);
-    $groups = array();
+    $groups = [];
 }
 
+/**
+ * ARCHITECTURE VIOLATION: Using deprecated Horde::img()
+ * @deprecated Use Horde_Themes_Image::tag() instead
+ * @see Horde_Deprecated::img()
+ */
 // Prepare actions
-$actions = array(
-    array('url' => Horde::url('edit/friends/blacklist.php'),
-          'img' => Horde::img('delete.png'),
-          'id' => 'user',
-          'name' => _("Remove")),
-    array('url' => Horde::url('user.php'),
-          'img' => Horde::img('user.png'),
-          'id' => 'user',
-          'name' => _("View profile")));
+$actions = [
+    ['url' => Horde::url('edit/friends/blacklist.php'),
+        'img' => Horde::img('delete.png'),
+        'id' => 'user',
+        'name' => _("Remove")],
+    ['url' => Horde::url('user.php'),
+        'img' => Horde::img('user.png'),
+        'id' => 'user',
+        'name' => _("View profile")]];
 
 $friend_form = new Folks_AddFriend_Form($vars, _("Add or remove user"), 'blacklist');
 
-$page_output->header(array(
-    'title' => $title
-));
+$page_output->header([
+    'title' => $title,
+]);
 require FOLKS_TEMPLATES . '/menu.inc';
 
 echo $tabs->render('blacklist');

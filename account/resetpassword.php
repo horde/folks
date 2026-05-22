@@ -1,6 +1,9 @@
 <?php
+
+use Horde\Util\Util;
+
 /**
- * Copyright 2007 Obala d.o.o. (http://www.obala.si/)
+ * Copyright 2007-2026 Obala d.o.o. (http://www.obala.si/)
  *
  * See the enclosed file LICENSE for license information (LGPL). If you
  * did not receive this file, see http://www.horde.org/licenses/lgpl21.
@@ -29,12 +32,12 @@ $form = new Horde_Form($vars, $title);
 $form->setButtons(_("Continue"));
 
 // Get user security pass
-$user = Horde_Util::getFormData('username');
+$user = Util::getFormData('username');
 if ($user) {
-    $u_prefs = $injector->getInstance('Horde_Prefs')->getPrefs('horde', array(
+    $u_prefs = $injector->getInstance('Horde_Prefs')->getPrefs('horde', [
         'cache' => false,
-        'user' => $registry->convertUsername($user, true)
-    ));
+        'user' => $registry->convertUsername($user, true),
+    ]);
     $answer = $u_prefs->getValue('security_answer');
     $question = $u_prefs->getValue('security_question');
 } else {
@@ -52,8 +55,15 @@ if (!empty($answer)) {
     $form->addVariable(_("Security answer"), 'security_answer', 'text', true);
 } else {
     $desc = _("The picture above is for antispam checking. Please retype the characters from the picture. They are case sensitive.");
-    $form->addVariable(_("Human check"), 'captcha', 'captcha', true, false, $desc,
-                        array(Folks::getCAPTCHA(!$form->isSubmitted()), HORDE_BASE . '/config/couri.ttf'));
+    $form->addVariable(
+        _("Human check"),
+        'captcha',
+        'captcha',
+        true,
+        false,
+        $desc,
+        [Folks::getCAPTCHA(!$form->isSubmitted()), HORDE_BASE . '/config/couri.ttf']
+    );
 }
 
 /* Validate the form. */
@@ -68,21 +78,23 @@ if ($form->validate()) {
     }
 
     /* Check the given values with the prefs stored ones. */
-    if ((!empty($answer) && Horde_String::lower($answer) == Horde_String::lower($info['security_answer'])) ||
-            empty($answer)) {
+    if ((!empty($answer) && Horde_String::lower($answer) == Horde_String::lower($info['security_answer']))
+            || empty($answer)) {
 
         /* Info matches, so reset the password. */
         $password = $auth->resetPassword($info['username']);
         if ($password instanceof PEAR_Error) {
             $notification->push($password);
-        throw new Horde_Exception_AuthenticationFailure();
+            throw new Horde_Exception_AuthenticationFailure();
         }
 
-        $body = sprintf(_("Your new password for %s is: %s. \n\n It was requested by %s on %s"),
-                            $registry->get('name', 'horde'),
-                            $password,
-                            $_SERVER['REMOTE_ADDR'],
-                            date('Ymd H:i:s'));
+        $body = sprintf(
+            _("Your new password for %s is: %s. \n\n It was requested by %s on %s"),
+            $registry->get('name', 'horde'),
+            $password,
+            $_SERVER['REMOTE_ADDR'],
+            date('Ymd H:i:s')
+        );
 
         Folks::sendMail($email, _("Your password has been reset"), $body);
 
@@ -95,9 +107,9 @@ if ($form->validate()) {
     }
 }
 
-$page_output->header(array(
-    'title' => $title
-));
+$page_output->header([
+    'title' => $title,
+]);
 require FOLKS_TEMPLATES . '/menu.inc';
 require FOLKS_TEMPLATES . '/login/signup.php';
 $page_output->footer();

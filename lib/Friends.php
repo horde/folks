@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Folks_Friends:: defines an API for implementing storage backends for
  * Friends.
@@ -12,19 +13,19 @@
  * @package Folks
  */
 
-class Folks_Friends {
-
+class Folks_Friends
+{
     /**
      * Friends instances
      */
-    private static $instances = array();
+    private static $instances = [];
 
     /**
      * Hash containing connection parameters.
      *
      * @var array
      */
-    protected $_params = array();
+    protected $_params = [];
 
     /**
      * String containing user
@@ -138,15 +139,15 @@ class Folks_Friends {
     public function needsApproval($user)
     {
         if ($GLOBALS['prefs']->isLocked('friends_approval')) {
-            return (boolean)$GLOBALS['prefs']->getValue('friends_approval');
+            return (bool) $GLOBALS['prefs']->getValue('friends_approval');
         }
 
-        $prefs = $GLOBALS['injector']->getInstance('Horde_Core_Factory_Prefs')->create('folks', array(
+        $prefs = $GLOBALS['injector']->getInstance('Horde_Core_Factory_Prefs')->create('folks', [
             'cache' => false,
-            'user' => $GLOBALS['registry']->convertUsername($user, true)
-        ));
+            'user' => $GLOBALS['registry']->convertUsername($user, true),
+        ]);
 
-        return (boolean)$prefs->getValue('friends_approval');
+        return (bool) $prefs->getValue('friends_approval');
     }
 
     /**
@@ -175,9 +176,12 @@ class Folks_Friends {
         }
 
         return $GLOBALS['registry']->callByPackage(
-            'letter', 'sendMessage', array($user,
-                                           array('title' => $title,
-                                                 'content' => $body)));
+            'letter',
+            'sendMessage',
+            [$user,
+                ['title' => $title,
+                    'content' => $body]]
+        );
     }
 
     /**
@@ -296,7 +300,7 @@ class Folks_Friends {
         $friends = $this->getFriends();
         if ($friends instanceof PEAR_Error) {
             return $friends;
-        }  elseif (in_array($friend, $friends)) {
+        } elseif (in_array($friend, $friends)) {
             return PEAR::raiseError(sprintf(_("User \"%s\" is already in fiend list"), $friend));
         }
 
@@ -304,7 +308,7 @@ class Folks_Friends {
         $friends = $this->waitingApprovalFrom();
         if ($friends instanceof PEAR_Error) {
             return $friends;
-        }  elseif (in_array($friend, $friends)) {
+        } elseif (in_array($friend, $friends)) {
             return PEAR::raiseError(sprintf(_("User \"%s\" is already in fiend list, but we are waiting his/her approval."), $friend));
         }
 
@@ -369,7 +373,7 @@ class Folks_Friends {
      */
     public function waitingApprovalFrom()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -377,7 +381,7 @@ class Folks_Friends {
      */
     public function waitingApprovalFor()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -439,7 +443,7 @@ class Folks_Friends {
      */
     public function getPossibleFriends($limit = 0)
     {
-        $possibilities = array();
+        $possibilities = [];
 
         $my_list = $this->getFriends();
         if ($my_list instanceof PEAR_Error) {
@@ -447,14 +451,14 @@ class Folks_Friends {
         }
 
         foreach ($my_list as $friend) {
-            $friends = Folks_Friends::singleton(null, array('user' => $friend));
+            $friends = Folks_Friends::singleton(null, ['user' => $friend]);
             $friend_friends = $friends->getFriends();
             if ($friend_friends instanceof PEAR_Error) {
                 continue;
             }
             foreach ($friend_friends as $friend_friend) {
-                if ($friend_friend == $this->_user ||
-                    in_array($friend_friend, $my_list)) {
+                if ($friend_friend == $this->_user
+                    || in_array($friend_friend, $my_list)) {
                     continue;
                 } elseif (isset($possibilities[$friend_friend])) {
                     $possibilities[$friend_friend] += 1;
@@ -520,12 +524,14 @@ class Folks_Friends {
     private function _getAdmins()
     {
         if (!$GLOBALS['injector']->getInstance('Horde_Perms')->exists('folks:admin')) {
-            return array();
+            return [];
         }
 
         $permission = $GLOBALS['injector']->getInstance('Horde_Perms')->getPermission('folks:admin');
 
-        return array_merge($permission->getUserPermissions(PERM_DELETE),
-                            $GLOBALS['conf']['auth']['admins']);
+        return array_merge(
+            $permission->getUserPermissions(PERM_DELETE),
+            $GLOBALS['conf']['auth']['admins']
+        );
     }
 }

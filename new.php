@@ -1,4 +1,7 @@
 <?php
+
+use Horde\Util\Util;
+
 /**
  * Copyright Obala d.o.o. (www.obala.si)
  *
@@ -19,28 +22,31 @@ if ($count instanceof PEAR_Error) {
     $count = 0;
 }
 
-$page = Horde_Util::getGet('page', 0);
+$page = Util::getGet('page', 0);
 $perpage = $prefs->getValue('per_page');
-$criteria = array('sort_by' => 'signup_at', 'sort_dir'  => 0);
+$criteria = ['sort_by' => 'signup_at', 'sort_dir'  => 0];
 $users = $folks_driver->getUsers($criteria, $page * $perpage, $perpage);
 if ($users instanceof PEAR_Error) {
     $notification->push($users);
-    $users = array();
+    $users = [];
 }
 
 $vars = Horde_Variables::getDefaultVariables();
-$pager = new Horde_Core_Ui_Pager('page',
-                            $vars, array('num' => $count,
-                                         'url' => 'new.php',
-                                         'perpage' => $perpage));
+$pager = new Horde_Core_Ui_Pager(
+    'page',
+    $vars,
+    ['num' => $count,
+        'url' => 'new.php',
+        'perpage' => $perpage]
+);
 
 $pager->preserve($criteria);
 $list_url = Folks::getUrlFor('list', 'new');
 
 $page_output->addScriptFile('stripe.js', 'horde');
-$page_output->header(array(
-    'title' => $title
-));
-$notification->notify(array('listeners' => 'status'));
+$page_output->header([
+    'title' => $title,
+]);
+$notification->notify(['listeners' => 'status']);
 require FOLKS_TEMPLATES . '/list/list.php';
 $page_output->footer();

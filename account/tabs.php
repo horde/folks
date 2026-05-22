@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright 2007 Obala d.o.o. (http://www.obala.si/)
+ * Copyright 2007-2026 Obala d.o.o. (http://www.obala.si/)
  *
  * See the enclosed file LICENSE for license information (LGPL). If you
  * did not receive this file, see http://www.horde.org/licenses/lgpl21.

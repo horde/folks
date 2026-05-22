@@ -1,1 +1,3 @@
-<?php echo $form->renderActive(null, null, null, 'post')?>
+<?php
+
+echo $form->renderActive(null, null, null, 'post');

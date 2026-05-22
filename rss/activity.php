@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright Obala d.o.o. (www.obala.si)
  *
@@ -13,9 +14,9 @@ $folks_authentication = 'none';
 require_once __DIR__ . '/../lib/base.php';
 
 $auth = $injector->getInstance('Horde_Core_Factory_Auth')->create();
-if (!$GLOBALS['registry']->getAuth() &&
-    (!isset($_SERVER['PHP_AUTH_USER']) ||
-     !$auth->authenticate($_SERVER['PHP_AUTH_USER'], array('password' => isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : null)))) {
+if (!$GLOBALS['registry']->getAuth()
+    && (!isset($_SERVER['PHP_AUTH_USER'])
+     || !$auth->authenticate($_SERVER['PHP_AUTH_USER'], ['password' => $_SERVER['PHP_AUTH_PW'] ?? null]))) {
     header('WWW-Authenticate: Basic realm="Letter RSS Interface"');
     header('HTTP/1.0 401 Unauthorized');
     echo '401 Unauthorized';
@@ -29,20 +30,20 @@ $friends_driver = Folks_Friends::singleton();
 $friend_list = $friends_driver->getFriends();
 if ($friend_list instanceof PEAR_Error) {
     $notification->push($friend_list);
-    $friend_list = array();
+    $friend_list = [];
 }
 
 // Get friends activities
-$firendActivities = array();
+$firendActivities = [];
 foreach ($friend_list as $user) {
     $activities = $folks_driver->getActivity($user);
     if ($activities instanceof PEAR_Error) {
         continue;
     }
     foreach ($activities as $activity) {
-        $firendActivities[$activity['activity_date']] = array('message' => $activity['activity_message'],
-                                                                'scope' => $activity['activity_scope'],
-                                                                'user' => $user);
+        $firendActivities[$activity['activity_date']] = ['message' => $activity['activity_message'],
+            'scope' => $activity['activity_scope'],
+            'user' => $user];
     }
 }
 krsort($firendActivities);

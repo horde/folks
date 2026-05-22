@@ -39,3 +39,7 @@ autoload:
   psr-4:
     Horde\Folks\: src/
 vendor: horde
+keywords: []
+quality:
+  phpstan:
+    level: 9

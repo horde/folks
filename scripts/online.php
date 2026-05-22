@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Script to update user online status site wide
  * Using in combination with online.sql is recomended

@@ -1,4 +1,7 @@
 <?php
+
+use Horde\Util\Util;
+
 /**
  * Copyright Obala d.o.o. (www.obala.si)
  *
@@ -16,7 +19,7 @@ if (!$registry->isAuthenticated()) {
     throw new Horde_Exception_AuthenticationFailure();
 }
 
-$user = Horde_Util::getGet('user');
+$user = Util::getGet('user');
 if (empty($user)) {
     $notification->push(_("You must supply a username."));
     Horde::url('edit/friends/index.php')->redirect();
@@ -32,14 +35,18 @@ if ($result instanceof PEAR_Error) {
 
 $notification->push(sprintf(_("User \"%s\" was confirmed as a friend."), $user), 'horde.success');
 
-$title = sprintf(_("%s approved you as a friend on %s"),
-                    $GLOBALS['registry']->getAuth(),
-                    $registry->get('name', 'horde'));
+$title = sprintf(
+    _("%s approved you as a friend on %s"),
+    $GLOBALS['registry']->getAuth(),
+    $registry->get('name', 'horde')
+);
 
-$body = sprintf(_("User %s confirmed you as a friend on %s.. \nTo see to his profile, go to: %s \n"),
-                $GLOBALS['registry']->getAuth(),
-                $registry->get('name', 'horde'),
-                Folks::getUrlFor('user', $GLOBALS['registry']->getAuth(), true, -1));
+$body = sprintf(
+    _("User %s confirmed you as a friend on %s.. \nTo see to his profile, go to: %s \n"),
+    $GLOBALS['registry']->getAuth(),
+    $registry->get('name', 'horde'),
+    Folks::getUrlFor('user', $GLOBALS['registry']->getAuth(), true, -1)
+);
 
 $friends->sendNotification($user, $title, $body);
 

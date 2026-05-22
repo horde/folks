@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright 2008-2017 Horde LLC (http://www.horde.org/)
+ * Copyright 2008-2026 Horde LLC (http://www.horde.org/)
  *
  * See the enclosed file LICENSE for license information (GPL). If you
  * did not receive this file, see http://www.horde.org/licenses/gpl.
@@ -8,18 +9,18 @@
  * @author Duck <duck@obala.net>
  * @package Folks
  */
-class Folks_Activity_Form extends Horde_Form {
-
+class Folks_Activity_Form extends Horde_Form
+{
     /**
      */
-    function __construct($vars, $title, $name)
+    public function __construct($vars, $title, $name)
     {
         parent::__construct($vars, $title, $name);
 
         if ($name == 'long') {
-            $this->addVariable(_("Activity"), 'activity', 'longText', true, false, null, array(4));
+            $this->addVariable(_("Activity"), 'activity', 'longText', true, false, null, [4]);
         } else {
-            $this->addVariable(_("Activity"), 'activity', 'text', true, false, null, array('', 80));
+            $this->addVariable(_("Activity"), 'activity', 'text', true, false, null, ['', 80]);
         }
 
         $this->setButtons(_("Post"));
@@ -27,7 +28,7 @@ class Folks_Activity_Form extends Horde_Form {
 
     /**
      */
-    function execute()
+    public function execute()
     {
         $message = trim(strip_tags($this->_vars->get('activity')));
 
@@ -35,14 +36,14 @@ class Folks_Activity_Form extends Horde_Form {
             return PEAR::raiseError(_("You cannot post an empty activity message."));
         }
 
-        $filters = array('text2html', 'bbcode', 'highlightquotes', 'emoticons');
-        $filters_params = array(array('parselevel' => Horde_Text_Filter_Text2html::MICRO),
-                                array(),
-                                array(),
-                                array());
+        $filters = ['text2html', 'bbcode', 'highlightquotes', 'emoticons'];
+        $filters_params = [['parselevel' => Horde_Text_Filter_Text2html::MICRO],
+            [],
+            [],
+            []];
 
-        if (($hasBBcode = strpos($message, '[')) !== false &&
-                strpos($message, '[/', $hasBBcode) !== false) {
+        if (($hasBBcode = strpos($message, '[')) !== false
+                && strpos($message, '[/', $hasBBcode) !== false) {
             $filters_params[0]['parselevel'] = Horde_Text_Filter_Text2html::NOHTML;
         }
 
@@ -55,7 +56,7 @@ class Folks_Activity_Form extends Horde_Form {
 
         if ($conf['facebook']['enabled']) {
             $message = trim(strip_tags($this->_vars->get('activity')));
-            register_shutdown_function(array(&$this, '_facebook'), $message);
+            register_shutdown_function([&$this, '_facebook'], $message);
         }
 
         return true;
@@ -79,11 +80,13 @@ class Folks_Activity_Form extends Horde_Form {
         }
 
         // Load FB
-        $context = array('http_client' => new Horde_Http_Client(),
-                         'http_request' => $GLOBALS['injector']->getInstance('Horde_Controller_Request'));
-        $facebook = new Horde_Service_Facebook($conf['facebook']['key'],
-                                               $conf['facebook']['secret'],
-                                               $context);
+        $context = ['http_client' => new Horde_Http_Client(),
+            'http_request' => $GLOBALS['injector']->getInstance('Horde_Controller_Request')];
+        $facebook = new Horde_Service_Facebook(
+            $conf['facebook']['key'],
+            $conf['facebook']['secret'],
+            $context
+        );
 
         $facebook->auth->setUser($fbp['uid'], $fbp['sid'], 0);
 

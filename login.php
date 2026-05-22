@@ -1,4 +1,7 @@
 <?php
+
+use Horde\Util\Util;
+
 /**
  * Copyright Obala d.o.o. (www.obala.si)
  *
@@ -17,8 +20,8 @@ require_once FOLKS_BASE . '/lib/Forms/Login.php';
  */
 function _loginNotice($user)
 {
-    if ($GLOBALS['prefs']->getValue('login_notify') != 1 ||
-        !$GLOBALS['registry']->hasInterface('letter')) {
+    if ($GLOBALS['prefs']->getValue('login_notify') != 1
+        || !$GLOBALS['registry']->hasInterface('letter')) {
         return;
     }
 
@@ -38,7 +41,7 @@ function _loginNotice($user)
         return true;
     }
 
-    $notify = array();
+    $notify = [];
     foreach ($friends as $friend) {
         if (array_key_exists($friend, $users)) {
             $notify[] = $friend;
@@ -50,9 +53,9 @@ function _loginNotice($user)
     }
 
     $body = _("User %s just logged in.\n%s");
-    $params = array($notify,
-                    array('title' => _("Login reminder"),
-                          'content' => sprintf($body, $user, Folks::getUrlFor('user', $user, true))));
+    $params = [$notify,
+        ['title' => _("Login reminder"),
+            'content' => sprintf($body, $user, Folks::getUrlFor('user', $user, true))]];
     $GLOBALS['registry']->callByPackage('letter', 'sendMessage', $params);
 }
 
@@ -77,16 +80,21 @@ if (isset($_GET['logout_reason'])) {
 /*
  * Special login for apps (gollem, imp)?
  */
-if ($conf['login']['prelogin'] &&
-    $GLOBALS['registry']->getAuth() &&
-   ($app = Horde_Util::getGet('app'))) {
-    Horde::callHook('prelogin', array($app), 'folks');
+if ($conf['login']['prelogin']
+    && $GLOBALS['registry']->getAuth()
+   && ($app = Util::getGet('app'))) {
+    /**
+     * ARCHITECTURE VIOLATION: Using deprecated Horde::callHook()
+     * @deprecated Use $GLOBALS['injector']->getInstance('Horde_Core_Hooks')->callHook() instead
+     * @see Horde_Deprecated::callHook()
+     */
+    Horde::callHook('prelogin', [$app], 'folks');
 }
 
 /*
  * Login parameters
  */
-$url_param = Horde_Util::getFormData('url');
+$url_param = Util::getFormData('url');
 $login_url = $registry->getServiceLink('login', 'folks')->add('url', $url_param);
 
 /*
@@ -103,12 +111,12 @@ if ($registry->isAuthenticated()) {
 /*
  * We have a login cookie?
  */
-if (isset($_COOKIE['folks_login_code']) &&
-    isset($_COOKIE['folks_login_user']) &&
-    $_COOKIE['folks_login_code'] == $folks_driver->getCookie($_COOKIE['folks_login_user'])) {
+if (isset($_COOKIE['folks_login_code'])
+    && isset($_COOKIE['folks_login_user'])
+    && $_COOKIE['folks_login_code'] == $folks_driver->getCookie($_COOKIE['folks_login_user'])) {
 
     // Horde Auto login
-    $registry->setAuth($_COOKIE['folks_login_user'], array('transparent' => 1));
+    $registry->setAuth($_COOKIE['folks_login_user'], ['transparent' => 1]);
 
     if (empty($url_param)) {
         $url_param = Folks::getUrlFor('user', $_COOKIE['folks_login_user']);
@@ -128,7 +136,7 @@ $form = new Folks_Login_Form($vars, $title, 'folks_login');
 /*
  * Check time between one login and anther
  */
-$username = Horde_String::lower(trim(Horde_Util::getPost('username')));
+$username = Horde_String::lower(trim(Util::getPost('username')));
 if ($username && $conf['login']['diff']) {
     $last_try = $cache->get('login_last_try_' . $username, $conf['cache']['default_lifetime']);
     if ($last_try && $_SERVER['REQUEST_TIME'] - $last_try <= $conf['login']['diff']) {
@@ -168,36 +176,36 @@ if ($form->isSubmitted()) {
     }
 
     switch ($profile['user_status']) {
-    case 'deactivated':
-        $notification->push(sprintf(_("Your username was temporary deacirvated. For any additional information please write to %s, and don't forgot to incluide your username."), $conf['folks']['support']), 'horde.warning');
-        header('Location: ' . Horde::selfUrl(true));
-        exit;
-        break;
+        case 'deactivated':
+            $notification->push(sprintf(_("Your username was temporary deacirvated. For any additional information please write to %s, and don't forgot to incluide your username."), $conf['folks']['support']), 'horde.warning');
+            header('Location: ' . Horde::selfUrl(true));
+            exit;
+            break;
 
-    case 'unconfirmed':
-    case 'inactive':
-        $notification->push(_("This account was still not activated. Check your inbox, we send you the activation code there."), 'horde.warning');
-        header('Location: ' . Horde::selfUrl(true));
-        exit;
-        break;
+        case 'unconfirmed':
+        case 'inactive':
+            $notification->push(_("This account was still not activated. Check your inbox, we send you the activation code there."), 'horde.warning');
+            header('Location: ' . Horde::selfUrl(true));
+            exit;
+            break;
 
-    case 'deleted':
-        $notification->push(_("This account was deleted or is expired."), 'horde.warning');
-        header('Location: ' . Horde::selfUrl(true));
-        exit;
-        break;
+        case 'deleted':
+            $notification->push(_("This account was deleted or is expired."), 'horde.warning');
+            header('Location: ' . Horde::selfUrl(true));
+            exit;
+            break;
     }
 
     // Horde Auto login
-    $registry->setAuth($username, array(
+    $registry->setAuth($username, [
         'password' => $info['password'],
-        'transparent' => 1
-    ));
+        'transparent' => 1,
+    ]);
 
     // Save user last login info.
     // We ignore last_login pref as it can be turned off by user
-    $params = array('last_login_on' => date('Y-m-d H:i:s'),
-                    'last_login_by' => $_SERVER['REMOTE_ADDR']);
+    $params = ['last_login_on' => date('Y-m-d H:i:s'),
+        'last_login_by' => $_SERVER['REMOTE_ADDR']];
     if ($profile['user_status'] == 'deleted') {
         $params['user_status'] = 'active';
     }
@@ -229,9 +237,9 @@ if ($form->isSubmitted()) {
     exit;
 }
 
-$page_output->header(array(
-    'title' => $title
-));
-$notification->notify(array('listeners' => 'status'));
+$page_output->header([
+    'title' => $title,
+]);
+$notification->notify(['listeners' => 'status']);
 require FOLKS_TEMPLATES . '/login/login.php';
 $page_output->footer();

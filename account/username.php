@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright 2007 Obala d.o.o. (http://www.obala.si/)
+ * Copyright 2007-2026 Obala d.o.o. (http://www.obala.si/)
  *
  * See the enclosed file LICENSE for license information (LGPL). If you
  * did not receive this file, see http://www.horde.org/licenses/lgpl21.
@@ -21,7 +22,7 @@ $form->addVariable(_("Your email"), 'email', 'email', true);
 if ($form->validate()) {
     $info = $form->getInfo();
 
-    $users = $folks_driver->getUsers(array('email' => $info['email']));
+    $users = $folks_driver->getUsers(['email' => $info['email']]);
     if ($users instanceof PEAR_Error) {
         $notification->push($users);
     } elseif (empty($users) || count($users) != 1) {
@@ -29,12 +30,14 @@ if ($form->validate()) {
     } else {
         $users = current($users);
 
-        $body = sprintf(_("Your username on %s %s is: %s. \n\n It was requested by %s on %s"),
-                            $registry->get('name', 'horde'),
-                            Horde::url($registry->get('webroot', 'horde'), true),
-                            $users['user_uid'],
-                            $_SERVER['REMOTE_ADDR'],
-                            date('Ymd H:i:s'));
+        $body = sprintf(
+            _("Your username on %s %s is: %s. \n\n It was requested by %s on %s"),
+            $registry->get('name', 'horde'),
+            Horde::url($registry->get('webroot', 'horde'), true),
+            $users['user_uid'],
+            $_SERVER['REMOTE_ADDR'],
+            date('Ymd H:i:s')
+        );
 
         Folks::sendMail($info['email'], _("Your username was requested"), $body);
 
@@ -44,9 +47,9 @@ if ($form->validate()) {
     }
 }
 
-$page_output->header(array(
-    'title' => $title
-));
+$page_output->header([
+    'title' => $title,
+]);
 require FOLKS_TEMPLATES . '/menu.inc';
 require FOLKS_TEMPLATES . '/login/signup.php';
 $page_output->footer();

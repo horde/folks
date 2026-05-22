@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright Obala d.o.o. (www.obala.si)
  *
@@ -13,9 +14,9 @@ $folks_authentication = 'none';
 require_once __DIR__ . '/../lib/base.php';
 
 $auth = $injector->getInstance('Horde_Core_Factory_Auth')->create();
-if (!$GLOBALS['registry']->getAuth() &&
-    (!isset($_SERVER['PHP_AUTH_USER']) ||
-     !$auth->authenticate($_SERVER['PHP_AUTH_USER'], array('password' => isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : null)))) {
+if (!$GLOBALS['registry']->getAuth()
+    && (!isset($_SERVER['PHP_AUTH_USER'])
+     || !$auth->authenticate($_SERVER['PHP_AUTH_USER'], ['password' => $_SERVER['PHP_AUTH_PW'] ?? null]))) {
     header('WWW-Authenticate: Basic realm="Letter RSS Interface"');
     header('HTTP/1.0 401 Unauthorized');
     echo '401 Unauthorized';
@@ -27,15 +28,15 @@ $friends_driver = Folks_Friends::singleton();
 
 $friends = $friends_driver->getFriends();
 if ($friends instanceof PEAR_Error) {
-    $friends = array();
+    $friends = [];
 }
 
 $online = $folks_driver->getOnlineUsers();
 if ($online instanceof PEAR_Error) {
-    $online = array();
+    $online = [];
 }
 
-$users = array();
+$users = [];
 foreach ($friends as $friend) {
     if (array_key_exists($friend, $online)) {
         $users[] = $friend;
